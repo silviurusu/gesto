@@ -1,0 +1,75 @@
+{% load i18n %}
+{% load active %}
+{% url homeurl as home %}
+{% url vanzariurl as vanzari %}
+{% url stocuriurl as stocuri %}
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>{% block title %}Dashboard{% endblock %}</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Vanzari si stocuri grafice" />
+
+
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ STATIC_URL }}css/charts.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ STATIC_URL }}css/bootstrap.css" />
+    <style>
+      body {
+          padding: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ STATIC_URL }}css/bootstrap-responsive.css" />
+
+
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/crossfilter.v1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/d3.v2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/grafice.vanzari.js"></script>
+  </head>
+  <body>
+
+    <div id="container span12">
+      <div id="header">
+
+
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                  <div class="container">
+                      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                      </a>
+                      <a class="brand" href="/">Dashboard</a>
+                      <div class="nav-collapse">
+                          <ul class="nav">
+                              {% if user.is_authenticated %}
+                                  <li class="{% active request home %}"><a href="/home/">Home</a></li>
+                                  <li class="{% active request vanzari %}"><a href="/vanzari/">Vanzari</a></li>
+                                  <li class="{% active request stocuri %}"><a href="/stocuri/">Stocuri</a></li>
+                                  <li class="pull-right"><a href="{% url userena_signout %}"><span>{% trans 'Signout' %} {{ user.username }}</span></a></li>
+                              {% else %}
+                                  <li class="pull-right"><a href="{% url userena_signin %}"><span>{% trans 'Signin' %}</span></a></li>
+
+                              {% endif %}
+                          </ul>
+                      </div><!--/.nav-collapse -->
+                  </div>
+            </div>
+        </div>
+      </div><!-- /header-->
+
+      {% block content_title %}{% endblock %}
+      <div id="content-container">
+        {% block content %}{% endblock %}
+      </div><!-- /content-container-->
+    </div><!-- /container-->
+
+   </body>
+ </html>
