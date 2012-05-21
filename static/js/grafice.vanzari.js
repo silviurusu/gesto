@@ -1,6 +1,6 @@
 
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
-d3.csv("http://localhost:8000/static/js/vanzari_short.json", function(flights) {
+d3.csv("http://localhost:8000/static/js/vanzari.json", function(flights) {
 
   // Various formatters.
   var formatNumber = d3.format(",d"),
@@ -16,21 +16,23 @@ d3.csv("http://localhost:8000/static/js/vanzari_short.json", function(flights) {
   flights.forEach(function(d, i) {
     d.index = i;
     d.date = parseDate(d.date);
-    d.delay = +d.delay;
-    d.distance = +d.distance;
+    d.valoare = +d.valoare;
+    d.pret = +d.pret;
+    d.nrfact = +d.nrfact;
+    d.pret = +d.pret;
   });
 
   // Create the crossfilter for the relevant dimensions and groups.
   var flight = crossfilter(flights),
       all = flight.groupAll(),
       date = flight.dimension(function(d) { return d3.time.day(d.date); }),
-      dates = date.group().reduceSum(function(d) { return d.delay; }),
-      hour = flight.dimension(function(d) { return d.date.getHours() + d.date.getMinutes() / 60; }),
-      hours = hour.group(Math.floor),
-      delay = flight.dimension(function(d) { return Math.max(-60, Math.min(149, d.delay)); }),
-      delays = delay.group(function(d) { return Math.floor(d / 10) * 10; }),
-      distance = flight.dimension(function(d) { return Math.min(1999, d.distance); }),
-      distances = distance.group(function(d) { return Math.floor(d / 50) * 50; });
+      dates = date.group().reduceSum(function(d) { return d.valoare; }),
+      hour = flight.dimension(function(d) { return d.date.getHours() ; }),
+      hours = hour.group().reduceSum(function(d) { return d.valoare; }),
+      valoare = flight.dimension(function(d) { return Math.floor(d.valoare / 10) * 10; }),
+      valori = valoare.group().reduceSum(function(d) { return d.valoare; }),
+      pret = flight.dimension(function(d) { return Math.floor(d.pret / 10) * 10; }),
+      preturi = pret.group().reduceSum(function(d) { return d.valoare; });
 
   var charts = [
 
@@ -38,21 +40,21 @@ d3.csv("http://localhost:8000/static/js/vanzari_short.json", function(flights) {
         .dimension(hour)
         .group(hours)
       .x(d3.scale.linear()
-        .domain([0, 24])
+        .domain([6, 22])
         .rangeRound([0, 10 * 24])),
 
     barChart()
-        .dimension(delay)
-        .group(delays)
+        .dimension(pret)
+        .group(preturi)
       .x(d3.scale.linear()
-        .domain([-60, 150])
+        .domain([0, 150])
         .rangeRound([0, 10 * 21])),
 
     barChart()
-        .dimension(distance)
-        .group(distances)
+        .dimension(valoare)
+        .group(valori)
       .x(d3.scale.linear()
-        .domain([0, 1000])
+        .domain([0, 150])
         .rangeRound([0, 10 * 20])),
 
     barChart()
@@ -60,9 +62,9 @@ d3.csv("http://localhost:8000/static/js/vanzari_short.json", function(flights) {
         .group(dates)
         .round(d3.time.day.round)
       .x(d3.time.scale()
-        .domain([new Date(2001, 0, 1), new Date(2001, 2, 15)])
-        .rangeRound([0, 10 * 85]))
-        .filter([new Date(2001, 0, 1), new Date(2001, 1, 1)])
+        .domain([new Date(2012, 3, 1), new Date(2012, 4, 30)])
+        .rangeRound([0, 10 * 80]))
+        .filter([new Date(2012, 4, 1), new Date(2012, 4, 20)])
 
   ];
 
@@ -97,7 +99,7 @@ d3.csv("http://localhost:8000/static/js/vanzari_short.json", function(flights) {
 
   // Like d3.time.format, but faster.
   function parseDate(d) {
-    return new Date(2001,
+    return new Date(2012,
         d.substring(0, 2) - 1,
         d.substring(2, 4),
         d.substring(4, 6),
@@ -115,7 +117,7 @@ d3.csv("http://localhost:8000/static/js/vanzari_short.json", function(flights) {
   };
 
   function flightList(div) {
-    var flightsByDate = nestByDate.entries(date.top(40));
+    var flightsByDate = nestByDate.entries(date.top(10));
 
     div.each(function() {
       var date = d3.select(this).selectAll(".date")
@@ -141,7 +143,7 @@ d3.csv("http://localhost:8000/static/js/vanzari_short.json", function(flights) {
 
       flightEnter.append("div")
           .attr("class", "origin")
-          .text(function(d) { return d.origin; });
+          .text(function(d) { return d.denumire; });
 
       flightEnter.append("div")
           .attr("class", "destination")
@@ -149,12 +151,12 @@ d3.csv("http://localhost:8000/static/js/vanzari_short.json", function(flights) {
 
       flightEnter.append("div")
           .attr("class", "distance")
-          .text(function(d) { return formatNumber(d.distance) + " buc" });
+          .text(function(d) { return d.pret + " ron" });
 
       flightEnter.append("div")
           .attr("class", "delay")
-          .classed("early", function(d) { return d.delay < 0; })
-          .text(function(d) { return formatChange(d.delay) + " lei"; });
+          .classed("early", function(d) { return d.valoare < 0; })
+          .text(function(d) { return d.valoare + " lei"; });
 
       flight.exit().remove();
 
