@@ -4,7 +4,7 @@ register = template.Library()
 @register.simple_tag
 def active(request, pattern):
     import re
-    print request, pattern
+#    print request, pattern
     if re.search(pattern, request.path):
         return 'active'
     return ''
