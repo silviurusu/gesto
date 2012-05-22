@@ -126,8 +126,24 @@ aside {
 #valoarevanzari{
     padding-left: 35px;
 }
+#nrclienti{
+    padding-left: 37px;
+}
+#valoaremedie{
+    padding-left: 35px;
+}
 .piggy {
     background-image: url("../img/piggy.png");
+    background-position: 5px 5px;
+    background-repeat: no-repeat;
+}
+.grafic {
+    background-image: url("../img/grafic.png");
+    background-position: 5px 5px;
+    background-repeat: no-repeat;
+}
+.people {
+    background-image: url("../img/people.png");
     background-position: 5px 5px;
     background-repeat: no-repeat;
 }

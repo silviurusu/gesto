@@ -34,6 +34,8 @@ d3.csv("http://localhost:8000/static/js/vanzari.json", function(flights) {
       valori = valoare.group().reduceSum(function(d) { return d.valoare; }),
       pret = flight.dimension(function(d) { return Math.floor(d.pret / 10) * 10; }),
       preturi = pret.group().reduceSum(function(d) { return d.valoare; });
+      flightsByOrder = flight.dimension(function(d) { return d.nrfact; });
+      flightsGroupedByOrder = flightsByOrder.group();
 
   var charts = [
 
@@ -97,8 +99,8 @@ d3.csv("http://localhost:8000/static/js/vanzari.json", function(flights) {
     list.each(render);
     d3.select("#active").text(formatNumber(all.value()));
     d3.select("#valoarevanzari").text(formatNumber(1234));
-    d3.select("#nrclienti").text(formatNumber(all.value()));
-    d3.select("#valoaremedie").text(formatNumber(99999/all.value()));
+    d3.select("#nrclienti").text(formatNumber(flightsGroupedByOrder.size()));
+    d3.select("#valoaremedie").text(formatNumber(all.value()));
   }
 
   // Like d3.time.format, but faster.
