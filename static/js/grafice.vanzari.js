@@ -25,6 +25,7 @@ d3.csv("http://localhost:8000/static/js/vanzari.json", function(flights) {
   // Create the crossfilter for the relevant dimensions and groups.
   var flight = crossfilter(flights),
       all = flight.groupAll(),
+      size = flight.size(),
       date = flight.dimension(function(d) { return d3.time.day(d.date); }),
       dates = date.group().reduceSum(function(d) { return d.valoare; }),
       hour = flight.dimension(function(d) { return d.date.getHours() ; }),
@@ -95,6 +96,9 @@ d3.csv("http://localhost:8000/static/js/vanzari.json", function(flights) {
     chart.each(render);
     list.each(render);
     d3.select("#active").text(formatNumber(all.value()));
+    d3.select("#valoarevanzari").text(formatNumber(1234));
+    d3.select("#nrclienti").text(formatNumber(all.value()));
+    d3.select("#valoaremedie").text(formatNumber(99999/all.value()));
   }
 
   // Like d3.time.format, but faster.

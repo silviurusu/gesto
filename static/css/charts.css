@@ -123,3 +123,11 @@ aside {
   font-size: smaller;
   width: 220px;
 }
+#valoarevanzari{
+    padding-left: 35px;
+}
+.piggy {
+    background-image: url("../img/piggy.png");
+    background-position: 5px 5px;
+    background-repeat: no-repeat;
+}
