@@ -29,7 +29,7 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
       dates = date.group().reduceSum(function(d) { return d.valoare; }),
       hour = flight.dimension(function(d) { return d.date.getHours() ; }),
       hours = hour.group().reduceSum(function(d) { return d.valoare; }),
-      valoare = flight.dimension(function(d) { return Math.floor(d.valoare/10) * 10; }),
+      valoare = flight.dimension(function(d) { return Math.floor(d.valoare/5) * 5; }),
       valori = valoare.group(),
       pret = flight.dimension(function(d) { return Math.floor(d.pret / 10) * 10; }),
       preturi = pret.group().reduceSum(function(d) { return d.valoare; }),
