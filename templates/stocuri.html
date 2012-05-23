@@ -1,4 +1,84 @@
 {% extends 'userena/base_userena.html' %}
 {% load i18n %}
 
-{% block content_title %}<h2 class="content-title">{% trans 'Stocuri grafice' %}</h2>{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="span2">
+            <div class="well sidebar-nav">
+                <ul class="nav nav-pills nav-stacked">
+                    <li class="nav-header">
+                        Locatii
+                    </li>
+                    <li class="active">
+                        <a href="#">Magazin 1, piata Unirii</a>
+                    </li>
+                    <li>
+                        <a href="#">Magazin 2, piata Operei</a>
+                    </li>
+                    <li>
+                        <a href="#">Magazin 3, centru</a>
+                    </li>
+                    <li>
+                        <a href="#">Magazin 4, Arad</a>
+                    </li>
+                    <li class="nav-header">
+                        Perioada
+                    </li>
+                    <li class="active">
+                        <a href="#">Azi</a>
+                    </li>
+                    <li>
+                        <a href="#">Ieri</a>
+                    </li>
+                    <li>
+                        <a href="#">Saptamana trecuta</a>
+                    </li>
+                    <li>
+                        <a href="#">Luna trecuta</a>
+                    </li>
+                </ul>
+            </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span9">
+            <div class="row">
+                <div class="piggy span1 table table-bordered alert alert-error piggy">
+                    <h2 id="valoarevanzari"></h2>
+                    <h6>valoare stoc</h6>
+                </div>
+                <div class="people span1 table table-bordered alert alert-success">
+                    <h2 id="nrclienti"></h2>
+                    <h6>nr clienti</h6>
+                </div>
+                <div class="grafic span1 table table-bordered alert alert-success">
+                    <h2 id="valoaremedie"></h2>
+                    <h6>vanz. medie</h6>
+                </div>
+                <div class="span3 table table-bordered alert">
+                    <h2>Strudel cu dovleac 123</h2>
+                    <h6>best seller</h6>
+                </div>
+            </div>
+            <div id="charts">
+                <div class="row">
+                    <div id="hour-chart" class="chart span3">
+                        <div class="title">Ora</div>
+                    </div>
+                    <div id="delay-chart" class="chart span3">
+                        <div class="title">Categorie</div>
+                    </div>
+                    <div id="distance-chart" class="chart span3">
+                        <div class="title">Valoare</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="date-chart" class="chart span9">
+                        <div class="title">Data</div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

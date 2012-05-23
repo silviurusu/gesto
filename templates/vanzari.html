@@ -56,7 +56,8 @@
                 <h6>vanz. medie</h6>
             </div>
             <div class="span3 table table-bordered alert">
-                <h2>Strudel cu dovleac 123</h2>
+                <i class="icon-chevron-down pull-right"></i>
+                <h2>Strudel 123</h2>
                 <h6>best seller</h6>
             </div>
         </div>
@@ -85,11 +86,29 @@
 
 
 
-    <aside id="totals"><span id="active">-</span> din <span id="total">-</span> produse vandute selectate.</aside>
-
     <div id="lists" class="row">
         <div id="flight-list" class="span5 list"></div>
-        <div id="categories-list" class="span5 list"></div>
+        <div id="categories-list" class="span5 list">
+            <table class="date table table-striped table-bordered table-condensed">
+                <th class="day">Valori vanzari categorii</th>
+                <tr class="flight">
+                    <td class="time">Cofetarie</td><td class="origin">4434 lei</td>
+                </tr>
+                <tr class="flight">
+                    <td class="time">Patiserie</td><td class="origin">1234 lei</td>
+                </tr>
+                <tr class="flight">
+                    <td class="time">Panificatie</td><td class="origin">534 lei</td>
+                </tr>
+                <tr class="flight">
+                    <td class="time">Ambalate</td><td class="origin">234 lei</td>
+                </tr>
+                <tr class="flight">
+                    <td class="time">Cafea</td><td class="origin">34 lei</td>
+                </tr>
+
+            </table>
+        </div>
     </div>
 
 {% endblock %}
