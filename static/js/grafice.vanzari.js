@@ -101,8 +101,10 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
           medie = totalvanzari/nrvanzari;
     chart.each(render);
     list.each(render);
-    d3.select("#active").text(formatNumber(all.value()));
-    d3.select("#valoarevanzari").text(formatFloat(totalvanzari));
+
+    x = formatFloat(totalvanzari).length;
+
+    d3.select("#valoarevanzari").text(formatFloat(totalvanzari)).style('font-size', d3.min([24,120/x])+'px');
     d3.select("#nrclienti").text(formatNumber(nrvanzari));
     d3.select("#valoaremedie").text(formatFloat(medie));
   }
@@ -114,6 +116,13 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
         d.substring(2, 4),
         d.substring(4, 6),
         d.substring(6, 8));
+  }
+
+  window.filterActive = function(tab,filters){
+      $('.activeday').toggleClass('activeday');
+      $(tab).toggleClass('activeday');
+      filters.forEach(function(d, i) { charts[i].filter(d); });
+      renderAll();
   }
 
   window.filter = function(filters) {

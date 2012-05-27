@@ -136,3 +136,10 @@ h1, h2 {
 .y.axis path {
     stroke: black;
 }
+
+.activeday > a,
+.activeday > a:hover {
+    color: #ffffff;
+    background-color: #0088cc !important;
+    text-align: right;
+}

@@ -14,7 +14,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="description" content="Vanzari si stocuri grafice" />
 
-
     <link rel="stylesheet" type="text/css" media="screen" href="{{ STATIC_URL }}css/charts.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{{ STATIC_URL }}css/bootstrap.css" />
     <style>
@@ -41,7 +40,7 @@
   </head>
   <body>
 
-    <div id="container span12">
+    <div class="container">
       <div id="header">
 
 
@@ -73,9 +72,16 @@
       </div><!-- /header-->
 
       {% block content_title %}{% endblock %}
-      <div id="span12">
-        {% block content %}{% endblock %}
-      </div><!-- /content-container-->
+      <div class="row show">
+        <div class="span1 ">1</div>
+        <div class="span2 ">2</div>
+        <div class="span3 ">3</div>
+        <div class="span3 ">3</div>
+        <div class="span3">3</div>
+      </div>
+
+      {% block content %}{% endblock %}
+
     </div><!-- /container-->
 
    </body>
