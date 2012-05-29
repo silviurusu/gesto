@@ -13,8 +13,13 @@ var y = d3.scale.ordinal()
 
 var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("top")
+    .orient("bottom")
     .tickSize(-height);
+
+var x2Axis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    .tickSize(0);
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -66,7 +71,8 @@ d3.csv("http://localhost:8000/static/js/stoczero.json", function(data) {
         .text(function(d) { return formatTime(d.value); });
 
     svg.append("g")
-        .attr("class", "x axis")
+        .attr("class", "x bottom axis")
+        .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 
     svg.append("g")
@@ -107,8 +113,9 @@ d3.csv("http://localhost:8000/static/js/stocmare.json", function(data) {
         .text(function(d) { return d.value; });
 
     svg2.append("g")
-        .attr("class", "x axis")
-        .call(xAxis);
+        .attr("class", "bottom axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(x2Axis);
 
     svg2.append("g")
         .attr("class", "y axis")
