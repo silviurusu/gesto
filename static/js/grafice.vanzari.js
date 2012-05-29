@@ -183,32 +183,6 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
     });
   }
 
-//function categoryList(div) {
-//    var flightsByCategory = nestByCategory.entries(date.top(10));
-//
-//    div.append("table")
-//        .attr("class", "cats table table-striped table-bordered table-condensed")
-//        .append("th")
-//        .attr("class", "day")
-//        .text("Categori");
-//
-//    div.each(function() {
-//      var date = d3.select(this).selectAll(".cats")
-//          .data(flightsByCategory, function(d) { return d.value; });
-//
-//      date.enter().append("tr")
-//          .attr("class", "flight")
-//          .append("td")
-//            .attr("class", "time")
-//            .text(function(d) {
-//              return d.key;
-//          });
-//
-//      date.exit().remove();
-//
-//    });
-//  }
-
   function barChart() {
     if (!barChart.id) barChart.id = 0;
 
