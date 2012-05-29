@@ -27,6 +27,12 @@ var svg = d3.select(".zeroStoc-chart").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var svg2 = d3.select(".stocMare-chart").append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 d3.csv("http://localhost:8000/static/js/stoczero.json", function(data) {
 
     // Parse numbers, and sort by value.
@@ -68,6 +74,47 @@ d3.csv("http://localhost:8000/static/js/stoczero.json", function(data) {
         .call(yAxis);
 });
 
+d3.csv("http://localhost:8000/static/js/stocmare.json", function(data) {
+
+    // Parse numbers, and sort by value.
+    data.forEach(function(d) {
+        d.value = +d.value;
+        d.name = d.name.substring(0,15);
+    });
+    data.sort(function(a, b) { return b.value - a.value; });
+
+    // Set the scale domain.
+    x.domain([0, d3.max(data, function(d){return d.value})]);
+    y.domain(data.map(function(d) { return d.name; }));
+
+    var bar = svg2.selectAll("g.bar")
+        .data(data)
+        .enter().append("g")
+        .attr("class", "bar")
+        .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
+
+    bar.append("rect")
+        .attr("width", function(d) { return x(d.value); })
+        .attr("height", y.rangeBand());
+
+    bar.append("text")
+        .attr("class", "value")
+        .attr("x", function(d) { return x(d.value); })
+        .attr("y", y.rangeBand() / 2)
+        .attr("dx", -3)
+        .attr("dy", ".35em")
+        .attr("text-anchor", "end")
+        .text(function(d) { return d.value; });
+
+    svg2.append("g")
+        .attr("class", "x axis")
+        .call(xAxis);
+
+    svg2.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+});
 // Like d3.time.format, but faster.
 function parseDate(d) {
     return new Date(2011,
