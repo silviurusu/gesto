@@ -83,10 +83,6 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
   var list = d3.selectAll(".list")
       .data([flightList]);
 
-  // Render the total.
-  d3.selectAll("#total")
-      .text(formatNumber(flight.size()));
-
   renderAll();
 
   // Renders the specified chart or list.
