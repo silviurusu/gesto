@@ -5,7 +5,12 @@ from models import *
 import csv
 import sys,os
 
-csv_path='d:/Dropbox/tmp/prospero/magazin1/'
+csv_path = 'd:/Dropbox/tmp/prospero/magazin1/'
+saleFieldNames = ['code','name','dep','qty','price']
+
+#import *.sale files from csv_path
+#filename : locAALLZZOOMM.sale
+#sale csv format is like saleFieldNames
 
 def import_sales(request):
     files = os.listdir(csv_path)
@@ -22,7 +27,7 @@ def import_sales(request):
 
             with open(filePath) as f:
 #                dataReader = csv.reader(f, delimiter=',', quotechar='"')
-                dataReader = csv.DictReader(f, fieldnames=['code','name','dep','qty','price'], delimiter=',', quotechar='"')
+                dataReader = csv.DictReader(f, fieldnames=saleFieldNames, delimiter=',', quotechar='"')
                 for row in dataReader:
 
                     saleItem = OperationItems()
