@@ -20,6 +20,7 @@ class Product (models.Model):
 
     code = models.CharField(max_length = 10)
     name = models.CharField(max_length = 50)
+    dep = models.ForeignKey(Category, default=1)
     qty = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
     created_at = models.DateTimeField(auto_now_add = True)
