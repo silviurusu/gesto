@@ -101,7 +101,8 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'userena',
     'south',
-    'charts'
+    'charts',
+    'wadofstuff'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -136,3 +137,7 @@ AUTH_PROFILE_MODULE = 'charts.Profile'
 USERENA_ACTIVATION_REQUIRED = False
 USERENA_USE_MESSAGES = False
 USERENA_SIGNIN_REDIRECT_URL = '/home/'
+
+SERIALIZATION_MODULES = {
+    'json': 'wadofstuff.django.serializers.json4ext'
+}

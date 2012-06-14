@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     (r'^vanzari/$', login_required(direct_to_template), { 'template': 'vanzari.html' }, 'vanzariurl'),
     (r'^stocuri/$', login_required(direct_to_template), { 'template': 'stocuri.html' }, 'stocuriurl'),
     (r'^import/$', 'charts.views.import_sales'),
+    (r'^sales/$', 'charts.views.sales_data'),
     (r'^accounts/', include('userena.urls')),
 )

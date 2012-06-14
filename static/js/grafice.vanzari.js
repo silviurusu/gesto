@@ -1,6 +1,7 @@
 
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
-d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) {
+//d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) {
+d3.json("http://localhost:8000/sales/", function(flights) {
 
   // Various formatters.
   var formatNumber = d3.format("d"),
@@ -15,11 +16,10 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
   // A little coercion, since the CSV is untyped.
   flights.forEach(function(d, i) {
     d.index = i;
-    d.date = parseDate(d.datetime);
-    d.valoare = +d.valoare;
-    d.pret = +d.pret;
+    d.date = parseDate(d.operation.operation_at);
+    d.valoare = +d.price* +d.qty;
+    d.pret = +d.price;
     d.nrfact = +d.nrfact;
-    d.pret = +d.pret;
   });
 
   // Create the crossfilter for the relevant dimensions and groups.
@@ -34,7 +34,8 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
       pret = flight.dimension(function(d) { return Math.floor(d.pret / 10) * 10; }),
       preturi = pret.group().reduceSum(function(d) { return d.valoare; }),
       nrfact = flight.dimension(function(d) { return d.nrfact; }),
-      nrfacts = nrfact.group();
+      nrfacts = nrfact.group(),
+      today = new Date();
 
 
 
@@ -66,9 +67,9 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
         .group(dates)
         .round(d3.time.day)
       .x(d3.time.scale()
-        .domain([new Date(2011, 3, 1), new Date(2011, 4, 25)])
+        .domain([getFirstofPreviousMonth(today), getLastofCurrentMonth(today)])
         .rangeRound([0, 10 * 80]))
-        .filter([new Date(2011, 4, 1), new Date(2011, 4, 21)])
+        .filter([getMonday(today), today])
 
   ];
 
@@ -107,12 +108,32 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
 
   // Like d3.time.format, but faster.
   function parseDate(d) {
-    return new Date(2011,
-        d.substring(0, 2) - 1,
-        d.substring(2, 4),
-        d.substring(4, 6),
-        d.substring(6, 8));
+    return new Date(d.substring(0, 4),
+        d.substring(5, 7) - 1,
+        d.substring(8, 10),
+        d.substring(11, 13),
+        d.substring(14, 16));
   }
+    function getMonday(d) {
+        var day = d.getDay(),
+            diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+        return new Date(d.getFullYear(), d.getMonth(), diff);
+    }
+    function getFirstofPreviousMonth(d) {
+        var year = d.getMonth() == 1 ? d.getFullYear() - 1 : d.getFullYear(),
+            month = d.getMonth() == 1 ? 12 : d.getMonth() - 1;
+        return new Date(year, month, 1);
+    }
+    function getLastofCurrentMonth(d){
+        var day = getDaysInMonth(d.getFullYear(), d.getMonth());
+        return new Date(d.getFullYear(), d.getMonth(), day);
+    }
+    function getDaysInMonth(year,month){
+        return[31,(isLeapYear(year)?29:28),31,30,31,30,31,31,30,31,30,31][month];
+    }
+    function isLeapYear(year){
+        new Date(year, 1, 29).getMonth() == 1
+    }
 
   window.filterActive = function(tab,filters){
       $('.activeday').toggleClass('activeday');
@@ -158,20 +179,20 @@ d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) 
 
       flightEnter.append("td")
           .attr("class", "origin")
-          .text(function(d) { return d.denumire; });
+          .text(function(d) { return d.product.name; });
 
       flightEnter.append("td")
           .attr("class", "destination")
-          .text(function(d) { return d.destination; });
+          .text(function(d) { return d.qty; });
 
       flightEnter.append("td")
           .attr("class", "distance")
-          .text(function(d) { return d.cant });
+          .text(function(d) { return d.price });
 
       flightEnter.append("td")
           .attr("class", "delay")
           .classed("early", function(d) { return d.valoare < 0; })
-          .text(function(d) { return d.valoare + " lei"; });
+          .text(function(d) { return formatFloat(d.valoare) + " lei"; });
 
       flight.exit().remove();
 

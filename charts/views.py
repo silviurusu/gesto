@@ -1,11 +1,13 @@
 from datetime import datetime
 from django.core.files.move import file_move_safe
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.core import serializers
 from models import *
 import csv
-import sys,os
+import os
 
-csv_path = 'd:/Dropbox/tmp/prospero/magazin1/'
+csv_path = 'd:/Dropbox/Shares/Prospero700/'
 saleFieldNames = ['code','name','dep','qty','price']
 
 #import *.sale files from csv_path
@@ -18,7 +20,7 @@ def import_sales(request):
         filePath = os.path.join(csv_path, file)
         if os.path.isfile(filePath) and file.endswith("sale"):
 
-            fileDate = datetime.strptime( file[3:15], '%y%m%d%H%M%S')
+            fileDate = datetime.strptime( file[3:13], '%y%m%d%H%M')
             operationType = OperationType.objects.get(name = 'sale')
             gestiune, created = Gestiune.objects.get_or_create(name = file[:3])
             sale = Operation.objects.create(type = operationType,
@@ -44,10 +46,18 @@ def import_sales(request):
             moveToPath = os.path.join(csv_path, file[3:9])
             if not os.path.exists(moveToPath):
                 os.makedirs(moveToPath)
-
+#            handle existing file
             file_move_safe(filePath,  moveToPath + '/' + file)
 
     return render(request, 'vanzari.html')
 
-
+def sales_data(request):
+#   magazin,datetime,nrfact,cod,denumire,cant,pret,valoare,categorie
+    sales = OperationItems.objects.all()
+    data = serializers.serialize('json', sales, relations={'operation':{
+                                                                    'relations':('gestiune',)
+                                                                },
+                                                           'product':{'fields':('name',)}})
+    print data
+    return HttpResponse(data, mimetype="application/json")
 
