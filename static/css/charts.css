@@ -143,3 +143,9 @@ h1, h2 {
     background-color: #0088cc !important;
     text-align: right;
 }
+.activeGest > a,
+.activeGest > a:hover {
+    color: #ffffff;
+    background-color: #0088cc !important;
+    text-align: right;
+}

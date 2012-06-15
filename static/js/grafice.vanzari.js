@@ -138,6 +138,23 @@ d3.json("http://localhost:8000/sales/", function(flights) {
       filter(filters);
   }
 
+  window.filterGest = function(tab){
+      $('.activeGest').toggleClass('activeGest');
+      $(tab).toggleClass('activeGest');
+      switch(tab)
+      {
+          case '.700':
+              gestiune.filter('700');
+              break;
+          case '.xxx':
+              gestiune.filter('mag');
+              break;
+          default:
+              filters = [null, null,  [Date.today().moveToDayOfWeek(1, -1), today]];
+      }
+      renderAll();
+  }
+
   window.filter = function(filters) {
     filters.forEach(function(d, i) { charts[i].filter(d); });
     renderAll();
