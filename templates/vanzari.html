@@ -26,17 +26,17 @@
                 <li class="nav-header">
                     Perioada
                 </li>
-                <li class="activeday azi">
-                    <a href="javascript:filterActive('.azi',[null, null, null,  [new Date(2012, 5, 14), new Date(2012, 5, 15)]])">Azi</a>
+                <li class="azi">
+                    <a href="javascript:filterTime('.azi')">Azi</a>
                 </li>
                 <li class="ieri">
-                    <a href="javascript:filterActive('.ieri',[null, null, null,  [new Date(2012, 5, 13), new Date(2012, 5, 14)]])">Ieri</a>
+                    <a href="javascript:filterTime('.ieri')">Ieri</a>
                 </li>
-                <li class="sapt">
-                    <a href="javascript:filterActive('.sapt',[null, null, null,  [new Date(2012, 5, 4), new Date(2012, 5, 11)]])">Saptamana trecuta</a>
+                <li class="activeday sapt">
+                    <a href="javascript:filterTime('.sapt')">Saptamana curenta</a>
                 </li>
                 <li class="luna">
-                    <a href="javascript:filterActive('.luna',[null, null, null,  [new Date(2012, 4, 1), new Date(2012, 4, 31)]])">Luna trecuta</a>
+                    <a href="javascript:filterTime('.luna')">Luna trecuta</a>
                 </li>
                 <li class="nav-header">
                     Produs
@@ -68,9 +68,7 @@
                 <div id="hour-chart" class="chart span3">
                     <div class="title">Ora</div>
                 </div>
-                <div id="delay-chart" class="chart span3" style="display: none;">
-                    <div class="title">Categorie</div>
-                </div>
+
                 <div id="distance-chart" class="chart span3">
                     <div class="title">Valoare</div>
                 </div>
@@ -84,8 +82,8 @@
 
 
 
-        <div class="row">
-            <div id="date-chart" class="chart span9">
+        <div class="row span9">
+            <div id="date-chart" class="chart">
                 <div class="title">Data</div>
             </div>
         </div>

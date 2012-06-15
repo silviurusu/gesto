@@ -3,6 +3,7 @@
 //d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) {
 d3.json("http://localhost:8000/sales/", function(flights) {
 
+
   // Various formatters.
   var formatNumber = d3.format("d"),
       formatFloat = d3.format("f"),
@@ -19,7 +20,8 @@ d3.json("http://localhost:8000/sales/", function(flights) {
     d.date = parseDate(d.operation.operation_at);
     d.valoare = +d.price* +d.qty;
     d.pret = +d.price;
-    d.nrfact = +d.nrfact;
+    d.nrfact = +d.operation.id;
+    d.gestiune = d.operation.gestiune.name;
   });
 
   // Create the crossfilter for the relevant dimensions and groups.
@@ -31,10 +33,12 @@ d3.json("http://localhost:8000/sales/", function(flights) {
       hours = hour.group().reduceSum(function(d) { return d.valoare; }),
       valoare = flight.dimension(function(d) { return Math.floor(d.valoare/5) * 5; }),
       valori = valoare.group(),
-      pret = flight.dimension(function(d) { return Math.floor(d.pret / 10) * 10; }),
-      preturi = pret.group().reduceSum(function(d) { return d.valoare; }),
+//      pret = flight.dimension(function(d) { return Math.floor(d.pret / 10) * 10; }),
+//      preturi = pret.group().reduceSum(function(d) { return d.valoare; }),
       nrfact = flight.dimension(function(d) { return d.nrfact; }),
       nrfacts = nrfact.group(),
+      gestiune = flight.dimension(function (d){ return d.gestiune;}),
+      gestiuni = gestiune.group(),
       today = new Date();
 
 
@@ -49,13 +53,6 @@ d3.json("http://localhost:8000/sales/", function(flights) {
         .rangeRound([0, 10 * 24])),
 
     barChart()
-        .dimension(pret)
-        .group(preturi)
-      .x(d3.scale.linear()
-        .domain([0, 150])
-        .rangeRound([0, 10 * 20])),
-
-    barChart()
         .dimension(valoare)
         .group(valori)
       .x(d3.scale.linear()
@@ -67,9 +64,9 @@ d3.json("http://localhost:8000/sales/", function(flights) {
         .group(dates)
         .round(d3.time.day)
       .x(d3.time.scale()
-        .domain([getFirstofPreviousMonth(today), getLastofCurrentMonth(today)])
+        .domain([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth ()])
         .rangeRound([0, 10 * 80]))
-        .filter([getMonday(today), today])
+        .filter([Date.today().moveToDayOfWeek(1, -1), today])
 
   ];
 
@@ -94,7 +91,9 @@ d3.json("http://localhost:8000/sales/", function(flights) {
   // Whenever the brush moves, re-rendering everything.
   function renderAll() {
       var totalvanzari = all.reduceSum(function(d){return d.valoare}).value(),
-          nrvanzari = nrfacts.all().reduce(function(previousValue, currentValue, index, array){return currentValue.value>0?previousValue + 1:previousValue ;}, 0),
+          nrvanzari = nrfacts.all().reduce(function(previousValue, currentValue, index, array){
+              return currentValue.value>0?previousValue + 1:previousValue ;
+          }, 0),
           medie = totalvanzari/nrvanzari;
     chart.each(render);
     list.each(render);
@@ -114,32 +113,29 @@ d3.json("http://localhost:8000/sales/", function(flights) {
         d.substring(11, 13),
         d.substring(14, 16));
   }
-    function getMonday(d) {
-        var day = d.getDay(),
-            diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
-        return new Date(d.getFullYear(), d.getMonth(), diff);
-    }
-    function getFirstofPreviousMonth(d) {
-        var year = d.getMonth() == 1 ? d.getFullYear() - 1 : d.getFullYear(),
-            month = d.getMonth() == 1 ? 12 : d.getMonth() - 1;
-        return new Date(year, month, 1);
-    }
-    function getLastofCurrentMonth(d){
-        var day = getDaysInMonth(d.getFullYear(), d.getMonth());
-        return new Date(d.getFullYear(), d.getMonth(), day);
-    }
-    function getDaysInMonth(year,month){
-        return[31,(isLeapYear(year)?29:28),31,30,31,30,31,31,30,31,30,31][month];
-    }
-    function isLeapYear(year){
-        new Date(year, 1, 29).getMonth() == 1
-    }
 
-  window.filterActive = function(tab,filters){
+  window.filterTime = function(tab){
       $('.activeday').toggleClass('activeday');
       $(tab).toggleClass('activeday');
-      filters.forEach(function(d, i) { charts[i].filter(d); });
-      renderAll();
+      filters = [];
+      switch(tab)
+      {
+          case '.azi':
+              filters = [null, null,  [Date.today(), today]];
+              break;
+          case '.ieri':
+              filters = [null, null,  [Date.today().addDays(-1), Date.today()]];
+              break;
+          case '.sapt':
+              filters = [null, null,  [Date.today().moveToDayOfWeek(1, -1), today]];
+              break;
+          case '.luna':
+              filters = [null, null,  [Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToFirstDayOfMonth().addDays(-1)]];
+              break;
+          default:
+              filters = [null, null,  [Date.today().moveToDayOfWeek(1, -1), today]];
+      }
+      filter(filters);
   }
 
   window.filter = function(filters) {
@@ -392,3 +388,4 @@ d3.json("http://localhost:8000/sales/", function(flights) {
     return d3.rebind(chart, brush, "on");
   }
 });
+
