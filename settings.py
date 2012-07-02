@@ -1,7 +1,7 @@
 # Django settings for dashboard project.
 import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
-
+from local_settings import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -12,16 +12,6 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'django_charts',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': 'c0c0c0',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
 
 TIME_ZONE = 'America/Chicago'
 
@@ -42,19 +32,12 @@ STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 
-STATICFILES_DIRS = (
-    'c:/Python27/Scripts/dashboard/static',
-)
-
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'bwj(ks0+n_oi@8a!dj=-y3f2cpqti*(#(sx*#)w*ewzy4jfh*9'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -83,7 +66,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 ROOT_URLCONF = 'dashboard.urls'
 
-TEMPLATE_DIRS = ('C:/Python27/Scripts/dashboard/templates',)
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',

@@ -1,0 +1,19 @@
+
+SECRET_KEY = 'bwj(ks0+n_oi@8a!dj=-y3f2cpqti*(#(sx*#)w*ewzy4jfh*9'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': '',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
+
+STATICFILES_DIRS = (
+    'c:/Python27/Scripts/dashboard/static',
+    )
+
+TEMPLATE_DIRS = ('C:/Python27/Scripts/dashboard/templates',)
