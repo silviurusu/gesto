@@ -51,7 +51,7 @@ def import_sales(request):
 
     return render(request, 'vanzari.html')
 
-def sales_data(request):
+def sales_json(request):
 #   magazin,datetime,nrfact,cod,denumire,cant,pret,valoare,categorie
     sales = OperationItems.objects.all()
     data = serializers.serialize('json', sales, relations={'operation':{
@@ -59,5 +59,16 @@ def sales_data(request):
                                                                 },
                                                            'product':{'fields':('name',)}})
     print data
-    return HttpResponse(data, mimetype="application/json")
+    filePath = os.path.join(csv_path, 'jsonSales.json')
+    print filePath
+    f = open(filePath,'w')
+    f.write(data)
+    f.close()
+
+    return render(request, 'vanzari.html')
+
+
+def sales(request):
+    return render(request, 'vanzari.html')
+#    return HttpResponse(data, mimetype="text/html")
 

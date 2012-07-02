@@ -1,7 +1,7 @@
 
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
-//d3.csv("http://localhost:8000/static/js/vanzari_cu_cat.json", function(flights) {
-d3.json("http://localhost:8000/sales/", function(flights) {
+d3.json("http://localhost:8000/static/json/jsonSales.json", function(flights) {
+//d3.json("http://localhost:8000/json/", function(flights) {
 
 
   // Various formatters.
