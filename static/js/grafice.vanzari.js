@@ -1,6 +1,6 @@
 
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
-d3.json("http://localhost:8000/static/json/jsonSales.json", function(flights) {
+d3.json("{{ STATIC_URL }}json/jsonSales.json", function(flights) {
 //d3.json("http://localhost:8000/json/", function(flights) {
 
 

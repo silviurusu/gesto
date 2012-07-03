@@ -14,7 +14,7 @@ saleFieldNames = ['code','name','dep','qty','price']
 #filename : locAALLZZOOMM.sale
 #sale csv format is like saleFieldNames
 
-def import_sales(request):
+def csv_to_sales(request):
     files = os.listdir(csv_path)
     for file in files:
         filePath = os.path.join(csv_path, file)
@@ -51,7 +51,7 @@ def import_sales(request):
 
     return render(request, 'vanzari.html')
 
-def sales_json(request):
+def sales_to_json(request):
 #   magazin,datetime,nrfact,cod,denumire,cant,pret,valoare,categorie
     sales = OperationItems.objects.all()
     data = serializers.serialize('json', sales, relations={'operation':{
