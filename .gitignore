@@ -2,6 +2,7 @@
 *.pot
 *.pyc
 settings.py
+CACHE/
 local_settings.py
 gunicorn.conf.py
 .idea
