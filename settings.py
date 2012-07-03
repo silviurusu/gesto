@@ -3,7 +3,7 @@ import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 from local_settings import *
 
-DEBUG = True
+
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -67,7 +67,6 @@ AUTHENTICATION_BACKENDS = (
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 ROOT_URLCONF = 'dashboard.urls'
-
 
 
 INSTALLED_APPS = (
@@ -143,3 +142,8 @@ DEBUG_TOOLBAR_PANELS = (
     )
 
 INTERNAL_IPS = ('127.0.0.1',)
+
+COMPRESS_ENABLED = True
+COMPRESS_JS_FILTERS = [
+    'compressor.filters.template.TemplateFilter',
+    ]
