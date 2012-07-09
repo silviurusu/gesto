@@ -7,7 +7,9 @@ from models import *
 import csv
 import os
 
-csv_path = 'd:/Dropbox/Shares/Prospero700/'
+#csv_path = 'd:/Dropbox/Shares/Prospero700/'
+from settings import CSV_PATH
+
 saleFieldNames = ['code','name','dep','qty','price']
 
 #import *.sale files from csv_path
@@ -15,9 +17,9 @@ saleFieldNames = ['code','name','dep','qty','price']
 #sale csv format is like saleFieldNames
 
 def csv_to_sales(request):
-    files = os.listdir(csv_path)
+    files = os.listdir(CSV_PATH)
     for file in files:
-        filePath = os.path.join(csv_path, file)
+        filePath = os.path.join(CSV_PATH, file)
         if os.path.isfile(filePath) and file.endswith("sale"):
 
             fileDate = datetime.strptime( file[3:13], '%y%m%d%H%M')
@@ -43,7 +45,7 @@ def csv_to_sales(request):
 
                     saleItem.save()
 
-            moveToPath = os.path.join(csv_path, file[3:9])
+            moveToPath = os.path.join(CSV_PATH, file[3:9])
             if not os.path.exists(moveToPath):
                 os.makedirs(moveToPath)
 #            handle existing file
@@ -59,7 +61,7 @@ def sales_to_json(request):
                                                                 },
                                                            'product':{'fields':('name',)}})
     print data
-    filePath = os.path.join(csv_path, 'jsonSales.json')
+    filePath = os.path.join(CSV_PATH, 'jsonSales.json')
     print filePath
     f = open(filePath,'w')
     f.write(data)
