@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.core import serializers
 from models import *
+from charts import  tasks
 import csv
 import os
 
@@ -71,6 +72,7 @@ def sales_to_json(request):
 
 
 def sales(request):
+    tasks.add(2,3)
     return render(request, 'vanzari.html')
 #    return HttpResponse(data, mimetype="text/html")
 
