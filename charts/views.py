@@ -72,7 +72,7 @@ def sales_to_json(request):
 
 
 def sales(request):
-    tasks.add(2,3)
+    tasks.add.delay(2,3)
     return render(request, 'vanzari.html')
 #    return HttpResponse(data, mimetype="text/html")
 
