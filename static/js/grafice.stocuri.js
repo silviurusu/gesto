@@ -38,7 +38,7 @@ var svg2 = d3.select(".stocMare-chart").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("http://localhost:8000/static/js/stoczero.json", function(data) {
+d3.csv("/static/js/stoczero.json", function(data) {
 
     // Parse numbers, and sort by value.
     data.forEach(function(d) {
@@ -80,7 +80,7 @@ d3.csv("http://localhost:8000/static/js/stoczero.json", function(data) {
         .call(yAxis);
 });
 
-d3.csv("http://localhost:8000/static/js/stocmare.json", function(data) {
+d3.csv("/static/js/stocmare.json", function(data) {
 
     // Parse numbers, and sort by value.
     data.forEach(function(d) {
