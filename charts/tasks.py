@@ -1,6 +1,6 @@
 from celery.utils.log import get_task_logger
 from django.core.files.move import file_move_safe
-from django.utils.timezone import now
+from django.core import serializers
 from datetime import datetime
 from models import *
 from settings import CSV_PATH
@@ -16,7 +16,7 @@ logger = get_task_logger(__name__)
 #filename : locAALLZZOOMM.sale
 #sale csv format is like saleFieldNames
 @celery.task()
-def csv_to_sales(request):
+def csv_to_sales():
     files = os.listdir(CSV_PATH)
     count = 0
     for file in files:
@@ -57,8 +57,21 @@ def csv_to_sales(request):
 
 
 @celery.task()
-def add(x, y):
-    logger.info('Adding %s + %s' % (now(), x, y))
-    return x + y
+def sales_to_json(request):
+#   magazin,datetime,nrfact,cod,denumire,cant,pret,valoare,categorie
+    sales = OperationItems.objects.all()
+    data = serializers.serialize('json', sales, relations={'operation':{
+        'relations':('gestiune',)
+    },
+                                                           'product':{'fields':('name',)}})
+    print data
+    filePath = os.path.join(CSV_PATH, 'jsonSales.json')
+    print filePath
+    f = open(filePath,'w')
+    f.write(data)
+    f.close()
+
+    logger.info('Exported sales')
+    return 'export'
 
 

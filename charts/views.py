@@ -12,21 +12,7 @@ import os
 from settings import CSV_PATH
 
 
-def sales_to_json(request):
-#   magazin,datetime,nrfact,cod,denumire,cant,pret,valoare,categorie
-    sales = OperationItems.objects.all()
-    data = serializers.serialize('json', sales, relations={'operation':{
-                                                                    'relations':('gestiune',)
-                                                                },
-                                                           'product':{'fields':('name',)}})
-    print data
-    filePath = os.path.join(CSV_PATH, 'jsonSales.json')
-    print filePath
-    f = open(filePath,'w')
-    f.write(data)
-    f.close()
 
-    return render(request, 'vanzari.html')
 
 
 def sales(request):
