@@ -57,7 +57,7 @@ def csv_to_sales():
 
 
 @celery.task()
-def sales_to_json(request):
+def sales_to_json():
 #   magazin,datetime,nrfact,cod,denumire,cant,pret,valoare,categorie
     sales = OperationItems.objects.all()
     data = serializers.serialize('json', sales, relations={'operation':{
