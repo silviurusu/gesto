@@ -18,6 +18,7 @@ logger = get_task_logger(__name__)
 @celery.task()
 def csv_to_sales(request):
     files = os.listdir(CSV_PATH)
+    count = 0
     for file in files:
         filePath = os.path.join(CSV_PATH, file)
         if os.path.isfile(filePath) and file.endswith("sale"):
@@ -50,13 +51,14 @@ def csv_to_sales(request):
                 os.makedirs(moveToPath)
             #TODO:handle existing file
             file_move_safe(filePath,  moveToPath + '/' + file)
-
-    #return 'import'
+            count += 1
+    logger.info('Imported %s sales' % count )
+    return 'import'
 
 
 @celery.task()
 def add(x, y):
-    logger.info('%s:::Adding %s + %s' % (now(), x, y))
+    logger.info('Adding %s + %s' % (now(), x, y))
     return x + y
 
 
