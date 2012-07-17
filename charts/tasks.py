@@ -65,7 +65,7 @@ def sales_to_json():
     },
                                                            'product':{'fields':('name',)}})
     print data
-    filePath = os.path.join(CSV_PATH, 'jsonSales.json')
+    filePath = os.path.join(STATICFILES_DIRS, 'json', 'jsonSales.json')
     print filePath
     f = open(filePath,'w')
     f.write(data)

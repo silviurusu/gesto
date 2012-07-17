@@ -6,3 +6,4 @@ CACHE/
 local_settings.py
 gunicorn.conf.py
 .idea
+jsonSales.json
