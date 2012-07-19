@@ -3,6 +3,7 @@
 *.pyc
 settings.py
 CACHE/
+protected/
 local_settings.py
 gunicorn.conf.py
 .idea

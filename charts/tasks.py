@@ -2,8 +2,8 @@ from celery.utils.log import get_task_logger
 from django.core.files.move import file_move_safe
 from django.core import serializers
 from datetime import datetime
+from local_settings import CSV_PATH, STATICFILES_DIRS
 from models import *
-from settings import CSV_PATH
 import celery
 import csv
 import os
@@ -64,9 +64,9 @@ def sales_to_json():
         'relations':('gestiune',)
     },
                                                            'product':{'fields':('name',)}})
-    print data
-    filePath = os.path.join(STATICFILES_DIRS, 'json', 'jsonSales.json')
-    print filePath
+#    print data
+    filePath = os.path.join(PROTECTEDFILES_DIRS, 'sales.json')
+#    print filePath
     f = open(filePath,'w')
     f.write(data)
     f.close()
