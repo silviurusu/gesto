@@ -2,7 +2,7 @@ from celery.utils.log import get_task_logger
 from django.core.files.move import file_move_safe
 from django.core import serializers
 from datetime import datetime
-from local_settings import CSV_PATH, STATICFILES_DIRS
+from local_settings import CSV_PATH, PROTECTEDFILES_DIRS
 from models import *
 import celery
 import csv
