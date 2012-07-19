@@ -23,16 +23,16 @@ def nginx_accel(request):
     allowed = False
 
     # do your permission things here, and set allowed to True if applicable
-    if request.user.username == 'vlad':
+    if request.user.email == 'a@a.com':
         allowed = True
 
 
     if allowed:
         response = HttpResponse()
-        url = '/protected/jsonSales.json' # this will obviously be different for every ressource
+        url = '/protected/sales.json' # this will obviously be different for every ressource
         # let nginx determine the correct content type
         response['Content-Type']="application/json"
-        response['Content-Disposition']="attachment; filename='jsonSales.json'"
+        response['Content-Disposition']="attachment; filename='sales.json'"
         response['X-Accel-Redirect'] = url
         return response
 
