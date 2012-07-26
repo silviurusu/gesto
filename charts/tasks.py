@@ -40,7 +40,7 @@ def csv_to_sales():
         filePath = os.path.join(CSV_PATH, file)
         if os.path.isfile(filePath) and file.endswith("sale"):
 
-            fileDate = datetime.strptime( file[3:13], '%y%m%d%H%M')
+            fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
             operationType = OperationType.objects.get(name = 'sale')
             gestiune, created = Gestiune.objects.get_or_create(name = file[:3])
             sale = Operation.objects.create(type = operationType,
