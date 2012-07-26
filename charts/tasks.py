@@ -2,7 +2,7 @@ from celery.utils.log import get_task_logger
 from django.core.files.move import file_move_safe
 from django.core import serializers
 from datetime import datetime
-from local_settings import CSV_PATH, PROTECTEDFILES_DIRS
+from local_settings import CSV_PATH, PROTECTEDFILES_DIR
 from models import *
 import celery
 import csv
@@ -11,6 +11,23 @@ import os
 saleFieldNames = ['code','name','dep','qty','price']
 
 logger = get_task_logger(__name__)
+
+def my_custom_sql():
+    from django.db import connection, transaction
+    cursor = connection.cursor()
+
+    # Data modifying operation - commit required
+    cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_gestiune.name as gestiune, charts_product.name as product, charts_operation.operation_at as at, charts_operation.id as id \
+                                        FROM charts_operationitems ,  charts_operation ,  charts_product ,  charts_gestiune \
+                                        WHERE  `operation_at` <  "2012-07-25 00:00:00" \
+                                        AND `operation_at` >  "2012-06-01 00:00:00" \
+                                        AND charts_operation.id = charts_operationitems.operation_id \
+                                        AND charts_operationitems.product_id = charts_product.id \
+                                        AND charts_gestiune.id = gestiune_id')
+    rows = cursor.fetchall()
+
+    return rows
+
 
 #import *.sale files from csv_path
 #filename : locAALLZZOOMM.sale
@@ -58,18 +75,14 @@ def csv_to_sales():
 
 @celery.task()
 def sales_to_json():
-#   magazin,datetime,nrfact,cod,denumire,cant,pret,valoare,categorie
-    sales = OperationItems.objects.all()
-    data = serializers.serialize('json', sales, relations={'operation':{
-        'relations':('gestiune',)
-    },
-                                                           'product':{'fields':('name',)}})
-#    print data
-    filePath = os.path.join(PROTECTEDFILES_DIRS, 'sales.json')
-#    print filePath
-    f = open(filePath,'w')
-    f.write(data)
-    f.close()
+    sales = my_custom_sql()
+    filePath = os.path.join(PROTECTEDFILES_DIR, '', 'sales.csv')
+    fieldnames = ['price','qty','gestiune','product','at','id']
+    with open(filePath,'wb') as f:
+        dw = csv.writer(f, delimiter=',')
+        dw.writerow(fieldnames)
+        for row in sales:
+            dw.writerow(row)
 
     logger.info('Exported sales')
     return 'export'

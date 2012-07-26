@@ -1,6 +1,6 @@
 
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
-d3.json("/json/", function(flights) {
+d3.csv("/json/", function(flights) {
 //d3.json("http://localhost:8000/json/", function(flights) {
 
 
@@ -17,11 +17,11 @@ d3.json("/json/", function(flights) {
   // A little coercion, since the CSV is untyped.
   flights.forEach(function(d, i) {
     d.index = i;
-    d.date = parseDate(d.operation.operation_at);
+    d.date = parseDate(d.at);
     d.valoare = +d.price* +d.qty;
     d.pret = +d.price;
-    d.nrfact = +d.operation.id;
-    d.gestiune = d.operation.gestiune.name;
+    d.nrfact = +d.id;
+    d.gestiune = d.gestiune;
   });
 
   // Create the crossfilter for the relevant dimensions and groups.

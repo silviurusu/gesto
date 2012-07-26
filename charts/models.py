@@ -1,15 +1,24 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from userena.models import UserenaLanguageBaseProfile
+from userena.models import *
 
 
-class Profile(UserenaLanguageBaseProfile):
+class Profile(UserenaBaseProfile):
 
     user = models.OneToOneField(User,
         unique=True,
         verbose_name='user',
         related_name='profile')
+    company = models.ForeignKey('Company', related_name='user_profiles')
+
+class Company(models.Model):
+    name = models.CharField(max_length=50)
+    vat = models.CharField(max_length=12)
+    no = models.CharField(max_length=20)
+    created_at = models.DateTimeField(auto_now_add = True)
+    updated_at = models.DateTimeField(auto_now = True)
+
 
 
 class Category (models.Model):
