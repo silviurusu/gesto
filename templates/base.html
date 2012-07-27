@@ -56,8 +56,8 @@
                           <ul class="nav">
                               {% if user.is_authenticated %}
                                   <li class="{% active request home %}"><a href="/home/">Home</a></li>
-                                  <li class="{% active request vanzari %}"><a href="/vanzari/">Vanzari</a></li>
-                                  <li class="{% active request stocuri %}"><a href="/stocuri/">Stocuri</a></li>
+                                  <li class="{% active request vanzari %}"><a href="/vanzari/">Sales</a></li>
+                                  <li class="{% active request stocuri %}"><a href="/stocuri/">Stocks</a></li>
                                   <li class="pull-right"><a href="{% url userena_signout %}"><span>{% trans 'Signout' %} {{ user.username }}</span></a></li>
                               {% else %}
                                   <li class="pull-right"><a href="{% url userena_signin %}"><span>{% trans 'Signin' %}</span></a></li>
