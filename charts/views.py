@@ -18,7 +18,7 @@ def csv_to_sales(request):
         if os.path.isfile(filePath) and file.endswith("sale"):
 
             fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
-            operationType, c = OperationType.objects.get_or_create(name = 'sale')
+            operationType = OperationType.objects.get(name = 'sale')
             gestiune, created = Gestiune.objects.get_or_create(name = file[:3])
             sale = Operation.objects.create(type = operationType,
                 gestiune = gestiune,
@@ -56,7 +56,7 @@ def my_custom_sql():
     # Data modifying operation - commit required
     cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_gestiune.name as gestiune, charts_product.name as product, charts_operation.operation_at as at, charts_operation.id as id \
                                         FROM charts_operationitems ,  charts_operation ,  charts_product ,  charts_gestiune \
-                                        WHERE  `operation_at` <  "2012-07-25 00:00:00" \
+                                        WHERE  `operation_at` <  "2012-08-01 00:00:00" \
                                         AND `operation_at` >  "2012-06-01 00:00:00" \
                                         AND charts_operation.id = charts_operationitems.operation_id \
                                         AND charts_operationitems.product_id = charts_product.id \

@@ -64,7 +64,7 @@ d3.csv("/json/", function(flights) {
         .group(dates)
         .round(d3.time.day)
       .x(d3.time.scale()
-        .domain([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth ()])
+        .domain([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth ().addDays(1)])
         .rangeRound([0, 10 * 80]))
         .filter([Date.today().moveToDayOfWeek(1, -1), today])
 
