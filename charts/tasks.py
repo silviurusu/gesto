@@ -16,11 +16,16 @@ def my_custom_sql():
     from django.db import connection, transaction
     cursor = connection.cursor()
 
-    # Data modifying operation - commit required
+    today = datetime.datetime.now()
+    int1 = today - monthdelta.MonthDelta(1)
+    int2 = today + monthdelta.MonthDelta(1)
+    s1 = datetime.datetime.strftime(int1.replace(day=1, hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
+    s2 = datetime.datetime.strftime(int2.replace(day=1, hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
+
     cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_gestiune.name as gestiune, charts_product.name as product, charts_operation.operation_at as at, charts_operation.id as id \
                                         FROM charts_operationitems ,  charts_operation ,  charts_product ,  charts_gestiune \
-                                        WHERE  `operation_at` <  "2012-08-01 00:00:00" \
-                                        AND `operation_at` >  "2012-06-01 00:00:00" \
+                                        WHERE  `operation_at` <  "'+s2+'" \
+                                        AND `operation_at` >  "'+s1+'" \
                                         AND charts_operation.id = charts_operationitems.operation_id \
                                         AND charts_operationitems.product_id = charts_product.id \
                                         AND charts_gestiune.id = gestiune_id')
