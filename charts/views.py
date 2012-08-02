@@ -74,7 +74,7 @@ def my_custom_sql():
 def sales_to_json(request):
     sales = my_custom_sql()
     print len(sales)
-    filePath = os.path.join('c:/Python27/Scripts/dashboard/protected', '', 'sales.csv')
+    filePath = os.path.join(PROTECTEDFILES_DIR, '', 'sales.csv')
     fieldnames = ['price','qty','gestiune','product','at','id']
     with open(filePath,'wb') as f:
         dw = csv.writer(f, delimiter=',')

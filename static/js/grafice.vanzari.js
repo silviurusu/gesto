@@ -21,7 +21,8 @@ d3.csv("/json/", function(flights) {
     d.valoare = +d.price* +d.qty;
     d.pret = +d.price;
     d.nrfact = +d.id;
-    d.gestiune = d.gestiune;
+//    d.gestiune = d.gestiune;
+//    d.product = d.product;
   });
 
   // Create the crossfilter for the relevant dimensions and groups.
@@ -39,6 +40,8 @@ d3.csv("/json/", function(flights) {
       nrfacts = nrfact.group(),
       gestiune = flight.dimension(function (d){ return d.gestiune;}),
       gestiuni = gestiune.group(),
+      product = flight.dimension(function (d){ return d.product;}),
+      products = gestiune.group(),
       today = new Date();
 
 
@@ -116,42 +119,47 @@ d3.csv("/json/", function(flights) {
 
   window.filterTime = function(tab){
       $('.activeday').toggleClass('activeday');
-      $(tab).toggleClass('activeday');
       filters = [];
-      switch(tab)
+      switch(tab.className)
       {
-          case '.azi':
+          case 'azi':
               filters = [null, null,  [Date.today(), today]];
               break;
-          case '.ieri':
+          case 'ieri':
               filters = [null, null,  [Date.today().addDays(-1), Date.today()]];
               break;
-          case '.sapt':
+          case 'sapt':
               filters = [null, null,  [Date.today().moveToDayOfWeek(1, -1), today]];
               break;
-          case '.luna':
+          case 'luna':
               filters = [null, null,  [Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToFirstDayOfMonth().addDays(-1)]];
               break;
           default:
               filters = [null, null,  [Date.today().moveToDayOfWeek(1, -1), today]];
       }
+      $(tab).toggleClass('activeday');
       filter(filters);
   }
 
   window.filterGest = function(tab){
       $('.activeGest').toggleClass('activeGest');
-      $(tab).toggleClass('activeGest');
-      switch(tab)
+      switch(tab.className)
       {
-          case '.700':
+          case '700':
               gestiune.filter('700');
               break;
-          case '.xxx':
+          case 'xxx':
               gestiune.filter('mag');
               break;
           default:
               filters = [null, null,  [Date.today().moveToDayOfWeek(1, -1), today]];
       }
+      $(tab).toggleClass('activeGest');
+      renderAll();
+  }
+
+  window.filterProduct = function(tab){
+
       renderAll();
   }
 
@@ -192,7 +200,7 @@ d3.csv("/json/", function(flights) {
 
       flightEnter.append("td")
           .attr("class", "origin")
-          .text(function(d) { return d.product.name; });
+          .text(function(d) { return d.product; });
 
       flightEnter.append("td")
           .attr("class", "destination")
