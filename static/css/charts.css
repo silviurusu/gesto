@@ -116,9 +116,24 @@ h1, h2 {
     fill: steelblue;
 }
 
-
 .bar text.value {
     fill: white;
+}
+
+.pie-slice {
+    fill: white;
+    font-size: 12px;
+}
+
+.pie-slice .selected {
+    stroke-width: 3;
+    stroke: #ccc;
+    fill-opacity: 1;
+}
+
+.pie-slice .deselected {
+    strok: none;
+    fill-opacity: .5;
 }
 
 .axis {
