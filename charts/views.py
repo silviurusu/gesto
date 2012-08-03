@@ -41,7 +41,7 @@ def csv_to_sales(request):
 
                     saleItem.save()
 
-            moveToPath = os.path.join(CSV_PATH, file[0:3], file[3:5], file[5:7], file[7:9])
+            moveToPath = os.path.join(os.path.split(CSV_PATH)[0], file[0:3], file[3:5], file[5:7], file[7:9])
             if not os.path.exists(moveToPath):
                 os.makedirs(moveToPath)
                 #TODO:handle existing file
