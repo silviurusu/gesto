@@ -41,7 +41,7 @@ d3.csv("/json/", function(flights) {
       gestiune = flight.dimension(function (d){ return d.gestiune;}),
       gestiuni = gestiune.group(),
       product = flight.dimension(function (d){ return d.product;}),
-      products = gestiune.group(),
+      products = product.group(),
       today = new Date();
 
 
@@ -70,7 +70,6 @@ d3.csv("/json/", function(flights) {
         .domain([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth ().addDays(1)])
         .rangeRound([0, 10 * 80]))
         .filter([Date.today().moveToDayOfWeek(1, -1), today])
-
   ];
 
   // Given our array of charts, which we assume are in the same order as the
@@ -158,8 +157,8 @@ d3.csv("/json/", function(flights) {
       renderAll();
   }
 
-  window.filterProduct = function(tab){
-
+  window.filterProduct = function(item){
+      product.filter('Branzoaica');
       renderAll();
   }
 
@@ -366,6 +365,12 @@ d3.csv("/json/", function(flights) {
       return chart;
     };
 
+    chart.margin = function(_) {
+      if (!arguments.length) return margin;
+      margin = _;
+      return chart;
+    };
+
     chart.x = function(_) {
       if (!arguments.length) return x;
       x = _;
@@ -414,3 +419,10 @@ d3.csv("/json/", function(flights) {
   }
 });
 
+$('#filterProduct').typeahead({
+    items:3,
+    source:["Strudel visine","Strudel mere","Grilias","Branzoaica","Cappuccino","Schweppes","Sandwich","Amandina"],
+    updater:function(item){
+        filterProduct(item)
+        return item;}
+})

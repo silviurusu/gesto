@@ -60,13 +60,14 @@ def my_custom_sql():
     s1 = datetime.datetime.strftime(int1.replace(day=1, hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
     s2 = datetime.datetime.strftime(int2.replace(day=1, hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
 
-    cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_gestiune.name as gestiune, charts_product.name as product, charts_operation.operation_at as at, charts_operation.id as id \
-                                        FROM charts_operationitems ,  charts_operation ,  charts_product ,  charts_gestiune \
+    cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_gestiune.name as gestiune, charts_product.name as product, charts_category.name as category, charts_operation.operation_at as at, charts_operation.id as id \
+                                        FROM charts_operationitems ,  charts_operation ,  charts_product ,  charts_gestiune, charts_category \
                                         WHERE  `operation_at` < "'+s2+'" \
                                         AND `operation_at` > "'+s1+'" \
                                         AND charts_operation.id = charts_operationitems.operation_id \
                                         AND charts_operationitems.product_id = charts_product.id \
-                                        AND charts_gestiune.id = gestiune_id')
+                                        AND charts_gestiune.id = gestiune_id \
+                                        AND charts_product.dep_id = charts_category.id ')
     rows = cursor.fetchall()
 
     return rows
@@ -75,7 +76,7 @@ def sales_to_json(request):
     sales = my_custom_sql()
     print len(sales)
     filePath = os.path.join(PROTECTEDFILES_DIR, '', 'sales.csv')
-    fieldnames = ['price','qty','gestiune','product','at','id']
+    fieldnames = ['price','qty','gestiune','product','category','at','id']
     with open(filePath,'wb') as f:
         dw = csv.writer(f, delimiter=',')
         dw.writerow(fieldnames)

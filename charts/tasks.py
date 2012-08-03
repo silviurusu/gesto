@@ -2,6 +2,7 @@ from celery.utils.log import get_task_logger
 from django.core.files.move import file_move_safe
 from django.core import serializers
 from datetime import datetime
+import monthdelta
 from local_settings import CSV_PATH, PROTECTEDFILES_DIR
 from models import *
 import celery
@@ -82,7 +83,7 @@ def csv_to_sales():
 def sales_to_json():
     sales = my_custom_sql()
     filePath = os.path.join(PROTECTEDFILES_DIR, '', 'sales.csv')
-    fieldnames = ['price','qty','gestiune','product','at','id']
+    fieldnames = ['price','qty','gestiune','product','category','at','id']
     with open(filePath,'wb') as f:
         dw = csv.writer(f, delimiter=',')
         dw.writerow(fieldnames)
