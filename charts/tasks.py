@@ -23,7 +23,7 @@ def my_custom_sql():
     s1 = datetime.datetime.strftime(int1.replace(day=1, hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
     s2 = datetime.datetime.strftime(int2.replace(day=1, hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
 
-    cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_gestiune.name as gestiune, charts_product.name as product, charts_operation.operation_at as at, charts_operation.id as id \
+    cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_gestiune.name as gestiune, charts_product.name as product, charts_category.name as category, charts_operation.operation_at as at, charts_operation.id as id \
                                         FROM charts_operationitems ,  charts_operation ,  charts_product ,  charts_gestiune \
                                         WHERE  `operation_at` <  "'+s2+'" \
                                         AND `operation_at` >  "'+s1+'" \
@@ -69,7 +69,7 @@ def csv_to_sales():
 
                     saleItem.save()
 
-            moveToPath = os.path.join(CSV_PATH, file[0:3], file[3:5], file[5:7], file[7:9])
+            moveToPath = os.path.join(os.path.split(CSV_PATH)[0], file[0:3], file[3:5], file[5:7], file[7:9])
             if not os.path.exists(moveToPath):
                 os.makedirs(moveToPath)
             #TODO:handle existing file
