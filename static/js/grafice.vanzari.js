@@ -1,422 +1,161 @@
 
-// (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
-d3.csv("/json/", function(flights) {
-//d3.json("http://localhost:8000/json/", function(flights) {
+
+d3.csv("/json/", function(sales) {
+
+    // Various formatters.
+    var formatNumber = d3.format("d"),
+        formatFloat = d3.format("f"),
+        formatDate = d3.time.format("%B %d, %Y"),
+        formatTime = d3.time.format("%I:%M %p");
+
+    // A little coercion, since the CSV is untyped.
+    sales.forEach(function(d, i) {
+        d.index = i;
+        d.date = parseDate(d.at);
+        d.val = Math.floor(+d.price * +d.qty);
+        d.nrfact = +d.id;
+    });
+
+    var sales = crossfilter(sales);
+
+    var all = sales.groupAll(),
+        hour = sales.dimension(function(d) {
+            return d.date.getHours();
+        }),
+        hours = hour.group().reduceSum(function(d) { return d.val; }),
+        day = sales.dimension(function(d) { return d3.time.day(d.date); }),
+        days = day.group().reduceSum(function(d) { return d.val; }),
+        dayOfWeek = sales.dimension(function(d) {
+            var day = d.date.getDay();
+            switch (day) {
+                case 0:return "Sun";
+                case 1:return "Mon";
+                case 2:return "Tue";
+                case 3:return "Wed";
+                case 4:return "Thu";
+                case 5:return "Fri";
+                case 6:return "Sat";
+            }
+        }),
+        dayOfWeekGroup = dayOfWeek.group(),
+        value = sales.dimension(function(d) { return d.val<19?Math.floor(d.val):19; }),
+        values = value.group(),
+        pret = sales.dimension(function(d) { return Math.floor(d.price / 10) * 10; }),
+        preturi = pret.group().reduceSum(function(d) { return d.val; }),
+        nrfact = sales.dimension(function(d) { return d.nrfact; }),
+        nrfacts = nrfact.group(),
+        product = sales.dimension(function (d){ return d.product;}),
+        products = product.group(),
+        category = sales.dimension(function(d) { return d.category}),
+        categories = category.group(),
+        gestiune = sales.dimension(function (d){ return d.gestiune;}),
+        gestiuni = gestiune.group();
 
 
-  // Various formatters.
-  var formatNumber = d3.format("d"),
-      formatFloat = d3.format("f"),
-      formatDate = d3.time.format("%B %d, %Y"),
-      formatTime = d3.time.format("%I:%M %p");
+    window.pieChartDOW = dc.pieChart("#pie-chart-dow")
+        .width(250)
+        .height(250)
+        .radius(100)
+        .innerRadius(40)
+        .dimension(dayOfWeek)
+        .group(dayOfWeekGroup)
+        .title(function(d) {
+            return d.data.key + ": " + d.data.value;
+        })
+        .renderTitle(true);
 
-  // A nest operator, for grouping the flight list.
-  var nestByDate = d3.nest()
-      .key(function(d) { return d3.time.day(d.date); });
+    window.pieChartCategory = dc.pieChart("#pie-chart-category")
+        .width(250)
+        .height(250)
+        .radius(100)
+        .dimension(category)
+        .group(categories)
+        .renderTitle(true);
 
-  // A little coercion, since the CSV is untyped.
-  flights.forEach(function(d, i) {
-    d.index = i;
-    d.date = parseDate(d.at);
-    d.valoare = +d.price* +d.qty;
-    d.pret = +d.price;
-    d.nrfact = +d.id;
-//    d.gestiune = d.gestiune;
-//    d.product = d.product;
-  });
-
-  // Create the crossfilter for the relevant dimensions and groups.
-  var flight = crossfilter(flights),
-      all = flight.groupAll(),
-      date = flight.dimension(function(d) { return d3.time.day(d.date); }),
-      dates = date.group().reduceSum(function(d) { return d.valoare; }),
-      hour = flight.dimension(function(d) { return d.date.getHours() ; }),
-      hours = hour.group().reduceSum(function(d) { return d.valoare; }),
-      valoare = flight.dimension(function(d) { return Math.floor(d.valoare/5) * 5; }),
-      valori = valoare.group(),
-//      pret = flight.dimension(function(d) { return Math.floor(d.pret / 10) * 10; }),
-//      preturi = pret.group().reduceSum(function(d) { return d.valoare; }),
-      nrfact = flight.dimension(function(d) { return d.nrfact; }),
-      nrfacts = nrfact.group(),
-      gestiune = flight.dimension(function (d){ return d.gestiune;}),
-      gestiuni = gestiune.group(),
-      product = flight.dimension(function (d){ return d.product;}),
-      products = product.group(),
-      today = new Date();
-
-
-
-  var charts = [
-
-    barChart()
+    window.barChartHour = dc.barChart("#bar-chart-hour")
+        .width(270)
+        .height(150)
         .dimension(hour)
         .group(hours)
-      .x(d3.scale.linear()
-        .domain([6, 22])
-        .rangeRound([0, 10 * 24])),
+        .elasticY(true)
+        .x(d3.scale.linear()
+        .domain([6,22])
+        .rangeRound([0, 10 * 24]));
 
-    barChart()
-        .dimension(valoare)
-        .group(valori)
-      .x(d3.scale.linear()
-        .domain([0, 100])
-        .rangeRound([0, 10 * 20])),
+    window.barChartValue = dc.barChart("#bar-chart-value")
+        .width(270)
+        .height(150)
+        .dimension(value)
+        .group(values)
+        .elasticY(true)
+        .x(d3.scale.linear()
+        .domain([0,20])
+        .rangeRound([0, 10 * 20]));
 
-    barChart()
-        .dimension(date)
-        .group(dates)
-        .round(d3.time.day)
-      .x(d3.time.scale()
+    window.barChartDay = dc.barChart("#bar-chart-day")
+        .width(820)
+        .height(180)
+        .dimension(day)
+        .group(days)
+        .elasticY(true)
+        .round(d3.time.day.round)
+        .x(d3.time.scale()
         .domain([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth ().addDays(1)])
         .rangeRound([0, 10 * 80]))
-        .filter([Date.today().moveToDayOfWeek(1, -1), today])
-  ];
+        .xUnits(d3.time.days);
 
-  // Given our array of charts, which we assume are in the same order as the
-  // .chart elements in the DOM, bind the charts to the DOM and render them.
-  // We also listen to the chart's brush events to update the display.
-  var chart = d3.selectAll(".chart")
-      .data(charts)
-      .each(function(chart) { chart.on("brush", renderAll).on("brushend", renderAll); });
+//
+//    var chart = d3.selectAll(".chart")
+//        .data(charts)
+//        .each(function(chart) { chart.on("brush", renderKPI).on("brushend", renderKPI); });
 
-  // Render the initial lists.
-  var list = d3.selectAll(".list")
-      .data([flightList]);
 
-  renderAll();
+    renderKPI();
+    dc.renderAll();
 
-  // Renders the specified chart or list.
-  function render(method) {
-    d3.select(this).call(method);
-  }
 
-  // Whenever the brush moves, re-rendering everything.
-  function renderAll() {
-      var totalvanzari = all.reduceSum(function(d){return d.valoare}).value(),
-          nrvanzari = nrfacts.all().reduce(function(previousValue, currentValue, index, array){
-              return currentValue.value>0?previousValue + 1:previousValue ;
-          }, 0),
-          medie = totalvanzari/nrvanzari;
-    chart.each(render);
-    list.each(render);
+    // Whenever the brush moves, re-rendering everything.
+    function renderKPI() {
+        var totalvanzari = all.reduceSum(function(d){return d.valoare}).value(),
+            nrvanzari = nrfacts.all().reduce(function(previousValue, currentValue, index, array){
+                return currentValue.value>0?previousValue + 1:previousValue ;
+            }, 0),
+            medie = totalvanzari/nrvanzari;
 
-    x = formatFloat(totalvanzari).length;
+        x = formatFloat(totalvanzari).length;
 
-    d3.select("#valoarevanzari").text(formatFloat(totalvanzari)).style('font-size', d3.min([24,120/x])+'px');
-    d3.select("#nrclienti").text(formatNumber(nrvanzari));
-    d3.select("#valoaremedie").text(formatFloat(medie));
-  }
-
-  // Like d3.time.format, but faster.
-  function parseDate(d) {
-    return new Date(d.substring(0, 4),
-        d.substring(5, 7) - 1,
-        d.substring(8, 10),
-        d.substring(11, 13),
-        d.substring(14, 16));
-  }
-
-  window.filterTime = function(tab){
-      $('.activeday').toggleClass('activeday');
-      filters = [];
-      switch(tab.className)
-      {
-          case 'azi':
-              filters = [null, null,  [Date.today(), today]];
-              break;
-          case 'ieri':
-              filters = [null, null,  [Date.today().addDays(-1), Date.today()]];
-              break;
-          case 'sapt':
-              filters = [null, null,  [Date.today().moveToDayOfWeek(1, -1), today]];
-              break;
-          case 'luna':
-              filters = [null, null,  [Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToFirstDayOfMonth().addDays(-1)]];
-              break;
-          default:
-              filters = [null, null,  [Date.today().moveToDayOfWeek(1, -1), today]];
-      }
-      $(tab).toggleClass('activeday');
-      filter(filters);
-  }
-
-  window.filterGest = function(tab){
-      $('.activeGest').toggleClass('activeGest');
-      switch(tab.className)
-      {
-          case '700':
-              gestiune.filter('700');
-              break;
-          case 'xxx':
-              gestiune.filter('mag');
-              break;
-          default:
-              filters = [null, null,  [Date.today().moveToDayOfWeek(1, -1), today]];
-      }
-      $(tab).toggleClass('activeGest');
-      renderAll();
-  }
-
-  window.filterProduct = function(item){
-      product.filter('Branzoaica');
-      renderAll();
-  }
-
-  window.filter = function(filters) {
-    filters.forEach(function(d, i) { charts[i].filter(d); });
-    renderAll();
-  };
-
-  window.reset = function(i) {
-    charts[i].filter(null);
-    renderAll();
-  };
-
-  function flightList(div) {
-    var flightsByDate = nestByDate.entries(date.top(10));
-
-    div.each(function() {
-      var date = d3.select(this).selectAll(".date")
-          .data(flightsByDate, function(d) { return d.key; });
-
-      date.enter().append("table")
-          .attr("class", "date table table-striped table-bordered table-condensed")
-        .append("th")
-          .attr("class", "day")
-          .text(function(d) { return formatDate(d.values[0].date); });
-
-      date.exit().remove();
-
-      var flight = date.order().selectAll(".flight")
-          .data(function(d) { return d.values; }, function(d) { return d.index; });
-
-      var flightEnter = flight.enter().append("tr")
-          .attr("class", "flight");
-
-      flightEnter.append("td")
-          .attr("class", "time")
-          .text(function(d) { return formatTime(d.date); });
-
-      flightEnter.append("td")
-          .attr("class", "origin")
-          .text(function(d) { return d.product; });
-
-      flightEnter.append("td")
-          .attr("class", "destination")
-          .text(function(d) { return d.qty; });
-
-      flightEnter.append("td")
-          .attr("class", "distance")
-          .text(function(d) { return d.price });
-
-      flightEnter.append("td")
-          .attr("class", "delay")
-          .classed("early", function(d) { return d.valoare < 0; })
-          .text(function(d) { return formatFloat(d.valoare) + " lei"; });
-
-      flight.exit().remove();
-
-      flight.order();
-    });
-  }
-
-  function barChart() {
-    if (!barChart.id) barChart.id = 0;
-
-    var margin = {top: 10, right: 10, bottom: 20, left: 10},
-        x,
-        y = d3.scale.linear().range([100, 0]),
-        id = barChart.id++,
-        axis = d3.svg.axis().orient("bottom"),
-        brush = d3.svg.brush(),
-        brushDirty,
-        dimension,
-        group,
-        round;
-
-    function chart(div) {
-      var width = x.range()[1],
-          height = y.range()[0];
-
-      y.domain([0, group.top(1)[0].value]);
-
-      div.each(function() {
-        var div = d3.select(this),
-            g = div.select("g");
-
-        // Create the skeletal chart.
-        if (g.empty()) {
-          div.select(".title").append("a")
-              .attr("href", "javascript:reset(" + id + ")")
-              .attr("class", "reset")
-              .text("reset")
-              .style("display", "none");
-
-          g = div.append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-          g.append("clipPath")
-              .attr("id", "clip-" + id)
-            .append("rect")
-              .attr("width", width)
-              .attr("height", height);
-
-          g.selectAll(".bar")
-              .data(["background", "foreground"])
-            .enter().append("path")
-              .attr("class", function(d) { return d + " bar"; })
-              .datum(group.all());
-
-          g.selectAll(".foreground.bar")
-              .attr("clip-path", "url(#clip-" + id + ")");
-
-          g.append("g")
-              .attr("class", "axis")
-              .attr("transform", "translate(0," + height + ")")
-              .call(axis);
-
-          // Initialize the brush component with pretty resize handles.
-          var gBrush = g.append("g").attr("class", "brush").call(brush);
-          gBrush.selectAll("rect").attr("height", height);
-          gBrush.selectAll(".resize").append("path").attr("d", resizePath);
-        }
-
-        // Only redraw the brush if set externally.
-        if (brushDirty) {
-          brushDirty = false;
-          g.selectAll(".brush").call(brush);
-          div.select(".title a").style("display", brush.empty() ? "none" : null);
-          if (brush.empty()) {
-            g.selectAll("#clip-" + id + " rect")
-                .attr("x", 0)
-                .attr("width", width);
-          } else {
-            var extent = brush.extent();
-            g.selectAll("#clip-" + id + " rect")
-                .attr("x", x(extent[0]))
-                .attr("width", x(extent[1]) - x(extent[0]));
-          }
-        }
-
-        g.selectAll(".bar").attr("d", barPath);
-      });
-
-      function barPath(groups) {
-        var path = [],
-            i = -1,
-            n = groups.length,
-            d;
-        while (++i < n) {
-          d = groups[i];
-          path.push("M", x(d.key), ",", height, "V", y(d.value), "h9V", height);
-        }
-        return path.join("");
-      }
-
-      function resizePath(d) {
-        var e = +(d == "e"),
-            x = e ? 1 : -1,
-            y = height / 3;
-        return "M" + (.5 * x) + "," + y
-            + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
-            + "V" + (2 * y - 6)
-            + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
-            + "Z"
-            + "M" + (2.5 * x) + "," + (y + 8)
-            + "V" + (2 * y - 8)
-            + "M" + (4.5 * x) + "," + (y + 8)
-            + "V" + (2 * y - 8);
-      }
+        d3.select("#valoarevanzari").text(formatFloat(totalvanzari)).style('font-size', d3.min([24,120/x])+'px');
+        d3.select("#nrclienti").text(formatNumber(nrvanzari));
+        d3.select("#valoaremedie").text(formatFloat(medie));
     }
 
-    brush.on("brushstart.chart", function() {
-      var div = d3.select(this.parentNode.parentNode.parentNode);
-      div.select(".title a").style("display", null);
-    });
-
-    brush.on("brush.chart", function() {
-      var g = d3.select(this.parentNode),
-          extent = brush.extent();
-      if (round) g.select(".brush")
-          .call(brush.extent(extent = extent.map(round)))
-        .selectAll(".resize")
-          .style("display", null);
-      g.select("#clip-" + id + " rect")
-          .attr("x", x(extent[0]))
-          .attr("width", x(extent[1]) - x(extent[0]));
-      dimension.filterRange(extent);
-    });
-
-    brush.on("brushend.chart", function() {
-      if (brush.empty()) {
-        var div = d3.select(this.parentNode.parentNode.parentNode);
-        div.select(".title a").style("display", "none");
-        div.select("#clip-" + id + " rect").attr("x", null).attr("width", "100%");
-        dimension.filterAll();
-      }
-    });
-
-    chart.margin = function(_) {
-      if (!arguments.length) return margin;
-      margin = _;
-      return chart;
+    function resetAllFilters() {
+        hour.filterAll();
+        day.filterAll();
+        dayOfWeek.filterAll();
+        value.filterAll();
+        nrfact.filterAll();
+        gestiune.filterAll();
+        product.filterAll();
     };
 
-    chart.margin = function(_) {
-      if (!arguments.length) return margin;
-      margin = _;
-      return chart;
+    function resetBody(){
+        jQuery("body").html('');
     };
 
-    chart.x = function(_) {
-      if (!arguments.length) return x;
-      x = _;
-      axis.scale(x);
-      brush.x(x);
-      return chart;
-    };
+    // Like d3.time.format, but faster.
+    function parseDate(d) {
+        return new Date(d.substring(0, 4),
+            d.substring(5, 7) - 1,
+            d.substring(8, 10),
+            d.substring(11, 13),
+            d.substring(14, 16));
+    }
 
-    chart.y = function(_) {
-      if (!arguments.length) return y;
-      y = _;
-      return chart;
+    window.reset = function(i) {
+        dc.filterAll();
+        dc.renderAll();
     };
-
-    chart.dimension = function(_) {
-      if (!arguments.length) return dimension;
-      dimension = _;
-      return chart;
-    };
-
-    chart.filter = function(_) {
-      if (_) {
-        brush.extent(_);
-        dimension.filterRange(_);
-      } else {
-        brush.clear();
-        dimension.filterAll();
-      }
-      brushDirty = true;
-      return chart;
-    };
-
-    chart.group = function(_) {
-      if (!arguments.length) return group;
-      group = _;
-      return chart;
-    };
-
-    chart.round = function(_) {
-      if (!arguments.length) return round;
-      round = _;
-      return chart;
-    };
-
-    return d3.rebind(chart, brush, "on");
-  }
 });
 
 $('#filterProduct').typeahead({

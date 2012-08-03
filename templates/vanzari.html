@@ -65,59 +65,39 @@
             </div>
 
             <div class="row">
-                <div id="hour-chart" class="chart span3">
-                    <div class="title">Hour</div>
+
+                <div id="bar-chart-hour" class="chart span3">
+                    <div class="title">Hour<a class="reset" href="javascript:void(0)"  onclick="barChartHour.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
                 </div>
 
-                <div id="distance-chart" class="chart span3">
-                    <div class="title">Value</div>
+                <div id="bar-chart-value" class="chart span3">
+                    <div class="title">Value<a class="reset" href="javascript:void(0)"  onclick="barChartValue.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
                 </div>
 
             </div>
         </div>
 
-        <div id="pie-chart" class="span2">
-            <div class="title">Categories</div>
+        <div id="pie-chart-category" class="span2 chart">
+            <div class="title">Categories<a class="reset" href="javascript:void(0)"  onclick="pieChartCategory.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
+
         </div>
-
-
 
         <div class="row span9">
-            <div id="date-chart" class="chart">
-                <div class="title">Date</div>
+            <div id="bar-chart-day" class="chart">
+                <div class="title">Date<a class="reset" href="javascript:void(0)"  onclick="barChartDay.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
+
             </div>
+        </div>
+
+        <div id="pie-chart-dow" class="span4 chart">
+            <div class="title">DaysOfWeek<a class="reset" href="javascript:void(0)"  onclick="pieChartDOW.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
         </div>
     </div>
 </div>
 
 
 
-<div id="lists" class="row">
-    <div id="flight-list" class="span5 list"></div>
-    <div id="categories-list" class="span5 list">
-        <table class="date table table-striped table-bordered table-condensed">
-            <th class="day">Sale by category</th>
-            <tr class="flight">
-                <td class="time">Cakes</td><td class="origin">4434 eur</td>
-            </tr>
-            <tr class="flight">
-                <td class="time">Bakery</td><td class="origin">1234 eur</td>
-            </tr>
-            <tr class="flight">
-                <td class="time">Bread</td><td class="origin">534 eur</td>
-            </tr>
-            <tr class="flight">
-                <td class="time">Cookies</td><td class="origin">234 eur</td>
-            </tr>
-            <tr class="flight">
-                <td class="time">Coffee</td><td class="origin">34 eur</td>
-            </tr>
-
-        </table>
-    </div>
-</div>
-
     <script type="text/javascript" src="{{ STATIC_URL }}js/grafice.vanzari.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/pie-chart.js"></script>
+
 
 {% endblock %}

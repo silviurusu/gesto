@@ -111,10 +111,11 @@ h1, h2 {
     background-repeat: no-repeat;
 }
 
-
-.bar rect {
+.chart rect.bar {
+    stroke: none;
     fill: steelblue;
 }
+
 
 .bar text.value {
     fill: white;
