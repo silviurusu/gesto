@@ -12,7 +12,7 @@ d3.csv("/json/", function(sales) {
     sales.forEach(function(d, i) {
         d.index = i;
         d.date = parseDate(d.at);
-        d.val = Math.floor(+d.price * +d.qty);
+        d.val = (+d.price * +d.qty).toFixed(0);
         d.nrfact = +d.id;
     });
 
@@ -26,8 +26,8 @@ d3.csv("/json/", function(sales) {
         day = sales.dimension(function(d) { return d3.time.day(d.date); }),
         days = day.group().reduceSum(function(d) { return d.val; }),
         dayOfWeek = sales.dimension(function(d) {
-            var day = d.date.getDay();
-            switch (day) {
+            var dow = d.date.getDay();
+            switch (dow) {
                 case 0:return "Sun";
                 case 1:return "Mon";
                 case 2:return "Tue";
@@ -37,7 +37,7 @@ d3.csv("/json/", function(sales) {
                 case 6:return "Sat";
             }
         }),
-        dayOfWeekGroup = dayOfWeek.group(),
+        dayOfWeekGroup = dayOfWeek.group().reduceSum(function(d) { return d.val; }),
         value = sales.dimension(function(d) { return d.val<19?Math.floor(d.val):19; }),
         values = value.group(),
         pret = sales.dimension(function(d) { return Math.floor(d.price / 10) * 10; }),
@@ -47,9 +47,10 @@ d3.csv("/json/", function(sales) {
         product = sales.dimension(function (d){ return d.product;}),
         products = product.group(),
         category = sales.dimension(function(d) { return d.category}),
-        categories = category.group(),
+        categories = category.group().reduceSum(function(d) { return d.val; }),
         gestiune = sales.dimension(function (d){ return d.gestiune;}),
-        gestiuni = gestiune.group();
+        gestiuni = gestiune.group(),
+        today = new Date();
 
 
     window.pieChartDOW = dc.pieChart("#pie-chart-dow")
@@ -98,7 +99,7 @@ d3.csv("/json/", function(sales) {
         .dimension(day)
         .group(days)
         .elasticY(true)
-        .round(d3.time.day.round)
+        .round(d3.time.day)
         .x(d3.time.scale()
         .domain([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth ().addDays(1)])
         .rangeRound([0, 10 * 80]))
@@ -110,7 +111,7 @@ d3.csv("/json/", function(sales) {
 //        .each(function(chart) { chart.on("brush", renderKPI).on("brushend", renderKPI); });
 
 
-    renderKPI();
+    //renderKPI();
     dc.renderAll();
 
 
@@ -127,6 +128,40 @@ d3.csv("/json/", function(sales) {
         d3.select("#valoarevanzari").text(formatFloat(totalvanzari)).style('font-size', d3.min([24,120/x])+'px');
         d3.select("#nrclienti").text(formatNumber(nrvanzari));
         d3.select("#valoaremedie").text(formatFloat(medie));
+    }
+
+    window.filterTime = function(tab){
+        $('.activeday').toggleClass('activeday');
+
+        switch(tab.className)
+        {
+            case 'azi':
+                barChartDay.filter([Date.today(), today]);
+                break;
+            case 'ieri':
+                barChartDay.filter([Date.today().addDays(-1), Date.today()]);
+                break;
+            case 'sapt':
+                barChartDay.filter([Date.today().moveToDayOfWeek(1, -1), today]);
+                break;
+            case 'luna':
+                barChartDay.filter([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToFirstDayOfMonth().addDays(-1)]);
+                break;
+            default:
+                barChartDay.filter([Date.today().moveToDayOfWeek(1, -1), today]);
+        }
+        $(tab).toggleClass('activeday');
+        dc.renderAll();
+    }
+
+    window.filterGest = function(tab){
+        $('.activeGest').toggleClass('activeGest');
+
+        if (tab.className.length = 3)
+            gestiune.filter(tab.className)
+
+        $(tab).toggleClass('activeGest');
+        dc.renderAll();
     }
 
     function resetAllFilters() {
@@ -157,6 +192,7 @@ d3.csv("/json/", function(sales) {
         dc.renderAll();
     };
 });
+
 
 $('#filterProduct').typeahead({
     items:3,
