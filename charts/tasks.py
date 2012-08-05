@@ -29,7 +29,8 @@ def my_custom_sql():
                                         AND `operation_at` >  "'+s1+'" \
                                         AND charts_operation.id = charts_operationitems.operation_id \
                                         AND charts_operationitems.product_id = charts_product.id \
-                                        AND charts_gestiune.id = gestiune_id')
+                                        AND charts_gestiune.id = gestiune_id \
+                                        AND charts_product.dep_id = charts_category.id ')
     rows = cursor.fetchall()
 
     return rows
