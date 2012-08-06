@@ -93,15 +93,14 @@ d3.csv("/json/", function(sales) {
         .rangeRound([0, 10 * 20]));
 
     window.barChartDay = dc.barChart("#bar-chart-day")
-        .width(820)
+        .width(600)
         .height(180)
         .dimension(day)
         .group(days)
         .elasticY(true)
-        .round(d3.time.day)
+//        .round(d3.time.day)
         .x(d3.time.scale()
-        .domain([Date.today().addDays(-30), Date.today().addDays(10)])
-        .rangeRound([0, 10 * 80]))
+        .domain([Date.today().addDays(-33), Date.today().addDays(5)]))
         .xUnits(d3.time.days)
         .filter([Date.today().moveToDayOfWeek(1, -1), today]);
 
