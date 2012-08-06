@@ -11,7 +11,10 @@
                 <li class="nav-header">
                     Locatii
                 </li>
-                <li class="700 activeGest">
+                <li class="all activeGest">
+                    <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">All</a>
+                </li>
+                <li class="700">
                     <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 1, Piata 700</a>
                 </li>
                 <li class="oli">
@@ -24,7 +27,7 @@
                     <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 4, Arad</a>
                 </li>
                 <li class="nav-header">
-                    Perioada
+                    Perioada <a  class="reset" href="javascript:void(0)"  onclick="reset()" style="display: inline;">Reset</a>
                 </li>
                 <li class="azi">
                     <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Today</a>
@@ -44,22 +47,23 @@
                 <li>
                     <input id="filterProduct" type="text" class="span2" data-provide="typeahead">
                 </li>
+
             </ul>
         </div><!--/.well -->
     </div><!--/span-->
     <div class="span9">
         <div class="span6">
-            <div class="row">
+            <div id="data-count" class="row">
                 <div class="piggy span1 table table-bordered alert alert-error piggy">
-                    <h2 id="valoarevanzari"></h2>
+                    <h2 id="valoarevanzari"><span class="filter-sales"></span></h2>
                     <h6>sales</h6>
                 </div>
                 <div class="people span1 table table-bordered alert alert-success">
-                    <h2 id="nrclienti"></h2>
+                    <h2 id="nrclienti"><span class="customer-count"></span></h2>
                     <h6>customer</h6>
                 </div>
                 <div class="grafic span1 table table-bordered alert alert-success">
-                    <h2 id="valoaremedie"></h2>
+                    <h2 id="valoaremedie"><span class="average-count"></span></h2>
                     <h6>avg sale</h6>
                 </div>
             </div>
@@ -84,7 +88,7 @@
 
         <div class="row span9">
             <div id="bar-chart-day" class="chart">
-                <div class="title">Date<a class="reset" href="javascript:void(0)"  onclick="barChartDay.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
+                <div class="title">Date<a class="reset" href="javascript:void(0)"  onclick="reset()" style="display: none;">reset</a></div>
 
             </div>
         </div>

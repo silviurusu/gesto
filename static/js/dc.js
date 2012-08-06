@@ -1387,13 +1387,21 @@ dc.lineChart = function(_parent) {
 
     return _chart.anchor(_parent);
 };
+
 dc.dataCount = function(_parent) {
-    var _formatNumber = d3.format(",d");
+    var _formatNumber = d3.format(",f");
     var _chart = dc.baseChart({});
 
     _chart.render = function() {
-        _chart.selectAll(".total-count").text(_formatNumber(_chart.dimension().size()));
-        _chart.selectAll(".filter-count").text(_formatNumber(_chart.group().value()));
+        var t = _chart.dimension().groupAll().reduceSum(function(d){return d.val}).value(),
+            c = _chart.dimension().dimension(function(d) { return d.nrfact; }).group().all().reduce(function(previousValue, currentValue, index, array){
+                    return currentValue.value>0?previousValue + 1:previousValue ;
+                }, 0),
+            x = _formatNumber(t).length,
+            y = _formatNumber(c).length;
+        _chart.selectAll(".filter-sales").text(_formatNumber(t)).style('font-size', d3.min([24,120/x])+'px');
+        _chart.selectAll(".customer-count").text(_formatNumber(c)).style('font-size', d3.min([24,120/y])+'px');
+        _chart.selectAll(".average-count").text(_formatNumber(t/c));
 
         return _chart;
     };

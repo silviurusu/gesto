@@ -13,7 +13,6 @@ d3.csv("/json/", function(sales) {
         d.index = i;
         d.date = parseDate(d.at);
         d.val = (+d.price * +d.qty).toFixed(0);
-        d.nrfact = +d.id;
     });
 
     var sales = crossfilter(sales);
@@ -42,7 +41,7 @@ d3.csv("/json/", function(sales) {
         values = value.group(),
         pret = sales.dimension(function(d) { return Math.floor(d.price / 10) * 10; }),
         preturi = pret.group().reduceSum(function(d) { return d.val; }),
-        nrfact = sales.dimension(function(d) { return d.nrfact; }),
+        nrfact = sales.dimension(function(d) { return d.id; }),
         nrfacts = nrfact.group(),
         product = sales.dimension(function (d){ return d.product;}),
         products = product.group(),
@@ -103,32 +102,13 @@ d3.csv("/json/", function(sales) {
         .x(d3.time.scale()
         .domain([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth ().addDays(1)])
         .rangeRound([0, 10 * 80]))
-        .xUnits(d3.time.days);
+        .xUnits(d3.time.days)
+        .filter([Date.today().moveToDayOfWeek(1, -1), today]);
 
-//
-//    var chart = d3.selectAll(".chart")
-//        .data(charts)
-//        .each(function(chart) { chart.on("brush", renderKPI).on("brushend", renderKPI); });
-
-
-    //renderKPI();
+    dc.dataCount("#data-count")
+        .dimension(sales)
+        .group(all);
     dc.renderAll();
-
-
-    // Whenever the brush moves, re-rendering everything.
-    function renderKPI() {
-        var totalvanzari = all.reduceSum(function(d){return d.valoare}).value(),
-            nrvanzari = nrfacts.all().reduce(function(previousValue, currentValue, index, array){
-                return currentValue.value>0?previousValue + 1:previousValue ;
-            }, 0),
-            medie = totalvanzari/nrvanzari;
-
-        x = formatFloat(totalvanzari).length;
-
-        d3.select("#valoarevanzari").text(formatFloat(totalvanzari)).style('font-size', d3.min([24,120/x])+'px');
-        d3.select("#nrclienti").text(formatNumber(nrvanzari));
-        d3.select("#valoaremedie").text(formatFloat(medie));
-    }
 
     window.filterTime = function(tab){
         $('.activeday').toggleClass('activeday');
@@ -151,32 +131,22 @@ d3.csv("/json/", function(sales) {
                 barChartDay.filter([Date.today().moveToDayOfWeek(1, -1), today]);
         }
         $(tab).toggleClass('activeday');
+        $('.nav .reset').show();
         dc.renderAll();
     }
 
     window.filterGest = function(tab){
         $('.activeGest').toggleClass('activeGest');
 
-        if (tab.className.length = 3)
-            gestiune.filter(tab.className)
+        if (tab.className.length == 3 && tab.className != 'all')
+            gestiune.filter(tab.className);
+        else
+            gestiune.filter(null);
 
         $(tab).toggleClass('activeGest');
+        $('.nav .reset').show();
         dc.renderAll();
     }
-
-    function resetAllFilters() {
-        hour.filterAll();
-        day.filterAll();
-        dayOfWeek.filterAll();
-        value.filterAll();
-        nrfact.filterAll();
-        gestiune.filterAll();
-        product.filterAll();
-    };
-
-    function resetBody(){
-        jQuery("body").html('');
-    };
 
     // Like d3.time.format, but faster.
     function parseDate(d) {
@@ -187,11 +157,18 @@ d3.csv("/json/", function(sales) {
             d.substring(14, 16));
     }
 
-    window.reset = function(i) {
+    window.reset = function() {
+        $('.activeGest').toggleClass('activeGest');
+        $('.all').toggleClass('activeGest');
+        $('.activeday').toggleClass('activeday');
+        $('.nav .reset').hide();
         dc.filterAll();
-        dc.renderAll();
+        dc.redrawAll();
+//        dc.renderAll();
     };
+
 });
+
 
 
 $('#filterProduct').typeahead({
