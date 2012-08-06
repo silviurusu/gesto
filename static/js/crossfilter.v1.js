@@ -143,7 +143,7 @@ function insertionsort_by(f) {
 
   function insertionsort(a, lo, hi) {
     for (var i = lo + 1; i < hi; ++i) {
-      for (var j = i, t = a[i], x = f(t); j > lo && f(a[j - 1]) > x; --j) {
+      for (var j = i, t = a[i], x = f(t), y; j > lo && ((y = f(a[j - 1])) > x || !(y >= y || y <= y)); --j) {
         a[j] = a[j - 1];
       }
       a[j] = t;
@@ -170,6 +170,16 @@ function quicksort_by(f) {
   }
 
   function quicksort(a, lo, hi) {
+      // First move NaN and undefined to the end.
+      var x;
+      while (lo < hi && !((x = f(a[hi - 1])) <= x || x >= x)) hi--;
+      for (var i = hi - 1; --i >= lo; ) {
+          x = f(a[i]);
+          if (!(x <= x || x >= x)) {
+              a[i] = a[--hi];
+              a[hi] = x;
+          }
+      }
 
     // Compute the two pivots by looking at 5 elements.
     var sixth = (hi - lo) / 6 | 0,

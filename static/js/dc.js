@@ -1394,7 +1394,7 @@ dc.dataCount = function(_parent) {
 
     _chart.render = function() {
         var t = _chart.dimension().groupAll().reduceSum(function(d){return d.val}).value(),
-            c = _chart.dimension().dimension(function(d) { return d.nrfact; }).group().all().reduce(function(previousValue, currentValue, index, array){
+            c = _chart.dimension().dimension(function(d) { return d.id; }).group().all().reduce(function(previousValue, currentValue, index, array){
                     return currentValue.value>0?previousValue + 1:previousValue ;
                 }, 0),
             x = _formatNumber(t).length,

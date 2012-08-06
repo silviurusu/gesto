@@ -12,7 +12,7 @@ d3.csv("/json/", function(sales) {
     sales.forEach(function(d, i) {
         d.index = i;
         d.date = parseDate(d.at);
-        d.val = (+d.price * +d.qty).toFixed(0);
+        d.val = Math.floor(+d.price * +d.qty);
     });
 
     var sales = crossfilter(sales);
@@ -39,16 +39,16 @@ d3.csv("/json/", function(sales) {
         dayOfWeekGroup = dayOfWeek.group().reduceSum(function(d) { return d.val; }),
         value = sales.dimension(function(d) { return d.val<19?Math.floor(d.val):19; }),
         values = value.group(),
-        pret = sales.dimension(function(d) { return Math.floor(d.price / 10) * 10; }),
-        preturi = pret.group().reduceSum(function(d) { return d.val; }),
-        nrfact = sales.dimension(function(d) { return d.id; }),
-        nrfacts = nrfact.group(),
-        product = sales.dimension(function (d){ return d.product;}),
-        products = product.group(),
+//        pret = sales.dimension(function(d) { return Math.floor(d.price / 10) * 10; }),
+//        preturi = pret.group().reduceSum(function(d) { return d.val; }),
+//        nrfact = sales.dimension(function(d) { return d.id; }),
+//        nrfacts = nrfact.group(),
+//        product = sales.dimension(function (d){ return d.product;}),
+//        products = product.group(),
         category = sales.dimension(function(d) { return d.category}),
         categories = category.group().reduceSum(function(d) { return d.val; }),
         gestiune = sales.dimension(function (d){ return d.gestiune;}),
-        gestiuni = gestiune.group(),
+//        gestiuni = gestiune.group(),
         today = new Date();
 
 
@@ -163,8 +163,8 @@ d3.csv("/json/", function(sales) {
         $('.activeday').toggleClass('activeday');
         $('.nav .reset').hide();
         dc.filterAll();
-        dc.redrawAll();
-//        dc.renderAll();
+//        dc.redrawAll();
+        dc.renderAll();
     };
 
 });
