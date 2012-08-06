@@ -1,12 +1,10 @@
+from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.files.move import file_move_safe
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
-from django.core import serializers
-import monthdelta
 from local_settings import CSV_PATH, PROTECTEDFILES_DIR
 from models import *
-from charts import  tasks
 import csv
 import os
 saleFieldNames = ['code','name','dep','qty','price']
@@ -55,10 +53,10 @@ def my_custom_sql():
     cursor = connection.cursor()
 
     today = datetime.datetime.now()
-    int1 = today - monthdelta.MonthDelta(1)
-    int2 = today + monthdelta.MonthDelta(1)
-    s1 = datetime.datetime.strftime(int1.replace(day=1, hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
-    s2 = datetime.datetime.strftime(int2.replace(day=1, hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
+    int1 = today - timedelta(days=30)
+    int2 = today + timedelta(days=1)
+    s1 = datetime.datetime.strftime(int1.replace(hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
+    s2 = datetime.datetime.strftime(int2.replace(hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
 
     cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_gestiune.name as gestiune, charts_product.name as product, charts_category.name as category, charts_operation.operation_at as at, charts_operation.id as id \
                                         FROM charts_operationitems ,  charts_operation ,  charts_product ,  charts_gestiune, charts_category \

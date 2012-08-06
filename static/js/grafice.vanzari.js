@@ -100,7 +100,7 @@ d3.csv("/json/", function(sales) {
         .elasticY(true)
         .round(d3.time.day)
         .x(d3.time.scale()
-        .domain([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth ().addDays(1)])
+        .domain([Date.today().addDays(-30), Date.today().addDays(10)])
         .rangeRound([0, 10 * 80]))
         .xUnits(d3.time.days)
         .filter([Date.today().moveToDayOfWeek(1, -1), today]);
@@ -125,7 +125,7 @@ d3.csv("/json/", function(sales) {
                 barChartDay.filter([Date.today().moveToDayOfWeek(1, -1), today]);
                 break;
             case 'luna':
-                barChartDay.filter([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToFirstDayOfMonth().addDays(-1)]);
+//                barChartDay.filter([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToFirstDayOfMonth().addDays(-1)]);
                 break;
             default:
                 barChartDay.filter([Date.today().moveToDayOfWeek(1, -1), today]);
