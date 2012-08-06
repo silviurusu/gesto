@@ -53,10 +53,10 @@ d3.csv("/json/", function(sales) {
 
 
    window.pieChartDOW = dc.pieChart("#pie-chart-dow")
-       .width(250)
-       .height(250)
-       .radius(100)
-       .innerRadius(40)
+       .width(200)
+       .height(200)
+       .radius(90)
+       .innerRadius(30)
        .dimension(dayOfWeek)
        .group(dayOfWeekGroup)
        .title(function(d) {
@@ -65,9 +65,9 @@ d3.csv("/json/", function(sales) {
        .renderTitle(true);
 
    window.pieChartCategory = dc.pieChart("#pie-chart-category")
-       .width(250)
-       .height(250)
-       .radius(100)
+       .width(200)
+       .height(200)
+       .radius(90)
        .dimension(category)
        .group(categories)
        .renderTitle(true);
