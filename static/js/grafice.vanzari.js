@@ -24,19 +24,19 @@ d3.csv("/json/", function(sales) {
         hours = hour.group().reduceSum(function(d) { return d.val; }),
         day = sales.dimension(function(d) { return d3.time.day(d.date); }),
         days = day.group().reduceSum(function(d) { return d.val; }),
-        dayOfWeek = sales.dimension(function(d) {
-            var dow = d.date.getDay();
-            switch (dow) {
-                case 0:return "Sun";
-                case 1:return "Mon";
-                case 2:return "Tue";
-                case 3:return "Wed";
-                case 4:return "Thu";
-                case 5:return "Fri";
-                case 6:return "Sat";
-            }
-        }),
-        dayOfWeekGroup = dayOfWeek.group().reduceSum(function(d) { return d.val; }),
+//        dayOfWeek = sales.dimension(function(d) {
+//            var dow = d.date.getDay();
+//            switch (dow) {
+//                case 0:return "Sun";
+//                case 1:return "Mon";
+//                case 2:return "Tue";
+//                case 3:return "Wed";
+//                case 4:return "Thu";
+//                case 5:return "Fri";
+//                case 6:return "Sat";
+//            }
+//        }),
+//        dayOfWeekGroup = dayOfWeek.group().reduceSum(function(d) { return d.val; }),
         value = sales.dimension(function(d) { return d.val<19?Math.floor(d.val):19; }),
         values = value.group(),
 //        pret = sales.dimension(function(d) { return Math.floor(d.price / 10) * 10; }),
@@ -45,32 +45,32 @@ d3.csv("/json/", function(sales) {
 //        nrfacts = nrfact.group(),
 //        product = sales.dimension(function (d){ return d.product;}),
 //        products = product.group(),
-        category = sales.dimension(function(d) { return d.category}),
-        categories = category.group().reduceSum(function(d) { return d.val; }),
+//        category = sales.dimension(function(d) { return d.category}),
+//        categories = category.group().reduceSum(function(d) { return d.val; }),
         gestiune = sales.dimension(function (d){ return d.gestiune;}),
 //        gestiuni = gestiune.group(),
         today = new Date();
 
-
-    window.pieChartDOW = dc.pieChart("#pie-chart-dow")
-        .width(250)
-        .height(250)
-        .radius(100)
-        .innerRadius(40)
-        .dimension(dayOfWeek)
-        .group(dayOfWeekGroup)
-        .title(function(d) {
-            return d.data.key + ": " + d.data.value;
-        })
-        .renderTitle(true);
-
-    window.pieChartCategory = dc.pieChart("#pie-chart-category")
-        .width(250)
-        .height(250)
-        .radius(100)
-        .dimension(category)
-        .group(categories)
-        .renderTitle(true);
+//
+//    window.pieChartDOW = dc.pieChart("#pie-chart-dow")
+//        .width(250)
+//        .height(250)
+//        .radius(100)
+//        .innerRadius(40)
+//        .dimension(dayOfWeek)
+//        .group(dayOfWeekGroup)
+//        .title(function(d) {
+//            return d.data.key + ": " + d.data.value;
+//        })
+//        .renderTitle(true);
+//
+//    window.pieChartCategory = dc.pieChart("#pie-chart-category")
+//        .width(250)
+//        .height(250)
+//        .radius(100)
+//        .dimension(category)
+//        .group(categories)
+//        .renderTitle(true);
 
     window.barChartHour = dc.barChart("#bar-chart-hour")
         .width(270)
