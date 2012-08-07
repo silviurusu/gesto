@@ -43,7 +43,7 @@ d3.csv("/json/", function(sales) {
 //        preturi = pret.group().reduceSum(function(d) { return d.val; }),
 //        nrfact = sales.dimension(function(d) { return d.id; }),
 //        nrfacts = nrfact.group(),
-//        product = sales.dimension(function (d){ return d.product;}),
+        product = sales.dimension(function (d){ return d.product;}),
 //        products = product.group(),
        category = sales.dimension(function(d) { return d.category}),
        categories = category.group().reduceSum(function(d) { return d.val; }),
@@ -144,6 +144,15 @@ d3.csv("/json/", function(sales) {
 
         $(tab).toggleClass('activeGest');
         $('.nav .reset').show();
+        dc.renderAll();
+    }
+
+    window.filterProduct = function(tab){
+        if (tab !='' )
+            product.filter(tab);
+        else
+            product.filter(null);
+
         dc.renderAll();
     }
 
