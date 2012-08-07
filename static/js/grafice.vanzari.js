@@ -114,17 +114,17 @@ d3.csv("/json/", function(sales) {
 
         switch(tab.className)
         {
-            case 'azi':
+            case 'today':
                 barChartDay.filter([Date.today(), today]);
                 break;
-            case 'ieri':
+            case 'yesterday':
                 barChartDay.filter([Date.today().addDays(-1), Date.today()]);
                 break;
-            case 'sapt':
+            case 'currentweek':
                 barChartDay.filter([Date.today().moveToDayOfWeek(1, -1), today]);
                 break;
-            case 'luna':
-//                barChartDay.filter([Date.today().moveToFirstDayOfMonth().addDays(-1).moveToFirstDayOfMonth(), Date.today().moveToFirstDayOfMonth().addDays(-1)]);
+            case 'lastweek':
+                barChartDay.filter([Date.today().moveToDayOfWeek(1, -1).addDays(-7), Date.today().moveToDayOfWeek(1, -1)]);
                 break;
             default:
                 barChartDay.filter([Date.today().moveToDayOfWeek(1, -1), today]);
