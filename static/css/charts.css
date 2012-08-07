@@ -95,6 +95,9 @@ h1, h2 {
 #valoaremedie{
     padding-left: 35px;
 }
+#qty{
+    padding-left: 35px;
+}
 .piggy {
     background-image: url("../img/piggy.png");
     background-position: 5px 5px;
@@ -134,6 +137,10 @@ h1, h2 {
 .pie-slice .deselected {
     strok: none;
     fill-opacity: .5;
+}
+
+.piechart-first {
+    margin-top: 50px;
 }
 
 .axis {

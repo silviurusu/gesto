@@ -1397,10 +1397,12 @@ dc.dataCount = function(_parent) {
             c = _chart.dimension().dimension(function(d) { return d.id; }).group().all().reduce(function(previousValue, currentValue, index, array){
                     return currentValue.value>0?previousValue + 1:previousValue ;
                 }, 0),
+            p = _chart.dimension().groupAll().reduceSum(function(d){return d.qty}).value(),
             x = _formatNumber(t).length,
             y = _formatNumber(c).length;
         _chart.selectAll(".filter-sales").text(_formatNumber(t)).style('font-size', d3.min([24,120/x])+'px');
         _chart.selectAll(".customer-count").text(_formatNumber(c)).style('font-size', d3.min([24,120/y])+'px');
+        _chart.selectAll(".qty-sum").text(_formatNumber(p));
         _chart.selectAll(".average-count").text(_formatNumber(t/c));
 
         return _chart;

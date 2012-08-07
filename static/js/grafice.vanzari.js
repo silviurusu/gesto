@@ -41,6 +41,8 @@ d3.csv("/json/", function(sales) {
         values = value.group(),
 //        pret = sales.dimension(function(d) { return Math.floor(d.price / 10) * 10; }),
 //        preturi = pret.group().reduceSum(function(d) { return d.val; }),
+//        qty = sales.dimension(function(d) { return d.qty; }),
+//        qties = qty.group().reduceSum(function(d) { return d.qty; }),
 //        nrfact = sales.dimension(function(d) { return d.id; }),
 //        nrfacts = nrfact.group(),
         product = sales.dimension(function (d){ return d.product;}),
@@ -53,8 +55,8 @@ d3.csv("/json/", function(sales) {
 
 
    window.pieChartDOW = dc.pieChart("#pie-chart-dow")
-       .width(200)
-       .height(200)
+       .width(180)
+       .height(180)
        .radius(90)
        .innerRadius(30)
        .dimension(dayOfWeek)
@@ -65,8 +67,8 @@ d3.csv("/json/", function(sales) {
        .renderTitle(true);
 
    window.pieChartCategory = dc.pieChart("#pie-chart-category")
-       .width(200)
-       .height(200)
+       .width(180)
+       .height(180)
        .radius(90)
        .dimension(category)
        .group(categories)

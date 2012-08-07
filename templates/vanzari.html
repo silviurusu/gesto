@@ -3,100 +3,109 @@
 
 {% block content %}
 
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span3">
+                <!--Sidebar content-->
+                <div class="well sidebar-nav">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="nav-header">
+                            Locatii
+                        </li>
+                        <li class="all activeGest">
+                            <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">All</a>
+                        </li>
+                        <li class="700">
+                            <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 1, Piata 700</a>
+                        </li>
+                        <li class="oli">
+                            <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)"">Outlet 2, Olimpia</a>
+                        </li>
+                        <li class="soa">
+                            <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 3, Soarelui</a>
+                        </li>
+                        <li class="vvv">
+                            <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 4, Arad</a>
+                        </li>
+                        <li class="nav-header">
+                            Perioada <a  class="reset" href="javascript:void(0)"  onclick="reset()" style="display: inline;">Reset</a>
+                        </li>
+                        <li class="today">
+                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Today</a>
+                        </li>
+                        <li class="yesterday">
+                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Yesterday</a>
+                        </li>
+                        <li class="activeday currentweek">
+                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Curent week</a>
+                        </li>
+                        <li class="lastweek">
+                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Last week</a>
+                        </li>
+                        <li class="nav-header">
+                            Product
+                        </li>
+                        <li>
+                            <input id="filterProduct" type="text" class="span8" data-provide="typeahead">
+                        </li>
 
-<div class="row">
-    <div class="span3">
-        <div class="well sidebar-nav">
-            <ul class="nav nav-pills nav-stacked">
-                <li class="nav-header">
-                    Locatii
-                </li>
-                <li class="all activeGest">
-                    <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">All</a>
-                </li>
-                <li class="700">
-                    <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 1, Piata 700</a>
-                </li>
-                <li class="oli">
-                    <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)"">Outlet 2, Olimpia</a>
-                </li>
-                <li class="soa">
-                    <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 3, Soarelui</a>
-                </li>
-                <li class="vvv">
-                    <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 4, Arad</a>
-                </li>
-                <li class="nav-header">
-                    Perioada <a  class="reset" href="javascript:void(0)"  onclick="reset()" style="display: inline;">Reset</a>
-                </li>
-                <li class="today">
-                    <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Today</a>
-                </li>
-                <li class="yesterday">
-                    <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Yesterday</a>
-                </li>
-                <li class="activeday currentweek">
-                    <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Curent week</a>
-                </li>
-                <li class="lastweek">
-                    <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Last week</a>
-                </li>
-                <li class="nav-header">
-                    Product
-                </li>
-                <li>
-                    <input id="filterProduct" type="text" class="span2" data-provide="typeahead">
-                </li>
+                    </ul>
+                </div><!--/.well -->
+            </div>
+            <div class="span7">
+                <!--KPIs & bar charts-->
+                <div id="data-count" class="row-fluid">
+                    <div class="piggy span3 table table-bordered alert alert-error piggy">
+                        <h2 id="valoarevanzari"><span class="filter-sales"></span></h2>
+                        <h6>sales</h6>
+                    </div>
+                    <div class="people span3 table table-bordered alert alert-success">
+                        <h2 id="nrclienti"><span class="customer-count"></span></h2>
+                        <h6>customers</h6>
+                    </div>
+                    <div class="grafic span3 table table-bordered alert alert-success">
+                        <h2 id="qty"><span class="qty-sum"></span></h2>
+                        <h6>products</h6>
+                    </div>
+                    <div class="grafic span3 table table-bordered alert alert-success">
+                        <h2 id="valoaremedie"><span class="average-count"></span></h2>
+                        <h6>avg sale</h6>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div id="bar-chart-hour" class="chart span5">
+                        <div class="title">Hour<a class="reset" href="javascript:void(0)"  onclick="barChartHour.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
+                    </div>
 
-            </ul>
-        </div><!--/.well -->
-    </div><!--/span-->
-    <div class="span9">
-        <div class="span6">
-            <div id="data-count" class="row">
-                <div class="piggy span1 table table-bordered alert alert-error piggy">
-                    <h2 id="valoarevanzari"><span class="filter-sales"></span></h2>
-                    <h6>sales</h6>
+                    <div id="bar-chart-value" class="chart span5">
+                        <div class="title">Value<a class="reset" href="javascript:void(0)"  onclick="barChartValue.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
+                    </div>
                 </div>
-                <div class="people span1 table table-bordered alert alert-success">
-                    <h2 id="nrclienti"><span class="customer-count"></span></h2>
-                    <h6>customer</h6>
-                </div>
-                <div class="grafic span1 table table-bordered alert alert-success">
-                    <h2 id="valoaremedie"><span class="average-count"></span></h2>
-                    <h6>avg sale</h6>
+                <div class="row-fluid">
+                    <div id="bar-chart-day" class="chart">
+                        <div class="title">Date<a class="reset" href="javascript:void(0)"  onclick="reset()" style="display: none;">reset</a></div>
+                    </div>
                 </div>
             </div>
+            <div class="span2">
+                <!--Pie charts-->
+                <div class="row-fluid">
 
-            <div class="row">
-
-                <div id="bar-chart-hour" class="chart span3">
-                    <div class="title">Hour<a class="reset" href="javascript:void(0)"  onclick="barChartHour.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
+                    <img src="/static/img/logo.gif"/>
+                    <div id="pie-chart-category" class="piechart-first">
+                        <div class="title">Categories<a class="reset" href="javascript:void(0)"  onclick="pieChartCategory.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
+                    </div>
                 </div>
-
-                <div id="bar-chart-value" class="chart span3">
-                    <div class="title">Value<a class="reset" href="javascript:void(0)"  onclick="barChartValue.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
+                <div class="row-fluid">
+                    <div id="pie-chart-dow" class="piechart-second">
+                        <div class="title">DaysOfWeek<a class="reset" href="javascript:void(0)"  onclick="pieChartDOW.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
+                    </div>
                 </div>
-
             </div>
-        </div>
-
-        <div id="pie-chart-category" class="span2 chart">
-            <div class="title">Categories<a class="reset" href="javascript:void(0)"  onclick="pieChartCategory.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
-
-        </div>
-
-        <div class="row span6">
-            <div id="bar-chart-day" class="chart">
-                <div class="title">Date<a class="reset" href="javascript:void(0)"  onclick="reset()" style="display: none;">reset</a></div>
-            </div>
-        </div>
-
-        <div id="pie-chart-dow" class="span2 chart">
-            <div class="title">DaysOfWeek<a class="reset" href="javascript:void(0)"  onclick="pieChartDOW.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
         </div>
     </div>
-</div>
+
+
 
 
 
