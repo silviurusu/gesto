@@ -485,7 +485,7 @@ dc.baseChart = function(_chart) {
     return _chart;
 };
 dc.coordinateGridChart = function(_chart) {
-    var DEFAULT_Y_AXIS_TICKS = 5;
+    var DEFAULT_Y_AXIS_TICKS = 6;
 
     _chart = dc.baseChart(_chart);
 
@@ -576,7 +576,9 @@ dc.coordinateGridChart = function(_chart) {
         }
 
         _y.range([_chart.yAxisHeight(), 0]);
-        _yAxis = _yAxis.scale(_y).orient("left").ticks(DEFAULT_Y_AXIS_TICKS);
+        _yAxis = _yAxis.scale(_y)
+                        .orient("left")
+                        .ticks(DEFAULT_Y_AXIS_TICKS);
 
         g.append("g")
             .attr("class", "axis y")
@@ -757,10 +759,17 @@ dc.coordinateGridChart = function(_chart) {
         if (_chart.dataAreSet()) {
             _chart.generateG();
 
-            _chart.renderXAxis(_chart.g());
             _chart.renderYAxis(_chart.g());
+            _chart.renderXAxis(_chart.g());
+
 
             _chart.plotData();
+
+            //--my hack--
+            //rerender axis so ticks have the 'right' z-index
+            _chart.renderYAxis(_chart.g());
+            _chart.renderXAxis(_chart.g());
+
 
             _chart.renderBrush(_chart.g());
         }
@@ -1204,6 +1213,10 @@ dc.barChart = function(_parent) {
         }
     };
 
+    _chart.title(function(d) {
+        return d.value;
+    });
+
     function generateBarsPerGroup(groupIndex, group) {
         var bars = _chart.g().selectAll("rect." + dc.constants.STACK_CLASS + groupIndex)
             .data(group.all());
@@ -1216,7 +1229,10 @@ dc.barChart = function(_parent) {
                 return barX(this, data, groupIndex, dataIndex);
             })
             .attr("y", _chart.xAxisY())
-            .attr("width", barWidth);
+            .attr("width", barWidth)
+            .append("title").text(function(d) {
+                return _chart.title()(d);
+            });
         dc.transition(bars, _chart.transitionDuration())
             .attr("y", function(data, dataIndex) {
                 return barY(this, data, dataIndex);
@@ -1225,20 +1241,29 @@ dc.barChart = function(_parent) {
                 return _chart.dataPointHeight(data, getGroupIndexFromBar(this));
             });
 
+
         // update
         dc.transition(bars, _chart.transitionDuration())
             .attr("y", function(data, dataIndex) {
-
                 return barY(this, data, dataIndex);
             })
             .attr("height", function(data) {
                 return _chart.dataPointHeight(data, getGroupIndexFromBar(this));
+            })
+            .attr("text", function(d) {
+                return _chart.title()(d);
             });
 
         // delete
         dc.transition(bars.exit(), _chart.transitionDuration())
             .attr("y", _chart.xAxisY())
-            .attr("height", 0);
+            .attr("height", 0)
+            .attr("text", null);
+//        if (_chart.renderTitle()) {
+//            bars.append("title").text(function(d) {
+//                return _chart.title()(d);
+//            });
+//        }
     }
 
     function barWidth(d) {
@@ -1286,107 +1311,7 @@ dc.barChart = function(_parent) {
 
     return _chart.anchor(_parent);
 };
-dc.lineChart = function(_parent) {
-    var AREA_BOTTOM_PADDING = 1;
 
-    var _chart = dc.stackableChart(dc.coordinateGridChart({}));
-    var _renderArea = false;
-
-    _chart.transitionDuration(500);
-
-    _chart.plotData = function() {
-        var groups = _chart.allGroups();
-
-        _chart.calculateDataPointMatrix(groups);
-
-        for (var groupIndex = 0; groupIndex < groups.length; ++ groupIndex) {
-            var group = groups[groupIndex];
-            plotDataByGroup(groupIndex, group);
-        }
-    };
-
-    function plotDataByGroup(groupIndex, group) {
-        var stackedCssClass = getStackedCssClass(groupIndex);
-
-        var g = createGrouping(stackedCssClass, group);
-
-        var line = drawLine(g, stackedCssClass, groupIndex);
-
-        if (_renderArea)
-            drawArea(g, stackedCssClass, groupIndex, line);
-    }
-
-    function getStackedCssClass(groupIndex) {
-        return dc.constants.STACK_CLASS + groupIndex;
-    }
-
-    function createGrouping(stackedCssClass, group) {
-        var g = _chart.g().select("g." + stackedCssClass);
-
-        if (g.empty())
-            g = _chart.g().append("g").attr("class", stackedCssClass);
-
-        g.datum(group.all());
-        return g;
-    }
-
-    function drawLine(g, stackedCssClass, groupIndex) {
-        var linePath = g.select("path.line");
-
-        if (linePath.empty())
-            linePath = g.append("path")
-                .attr("class", "line " + stackedCssClass);
-
-        linePath[0][0][dc.constants.GROUP_INDEX_NAME] = groupIndex;
-
-        var line = d3.svg.line()
-            .x(function(d) {
-                return _chart.margins().left + _chart.x()(_chart.keyRetriever()(d));
-            })
-            .y(function(d, dataIndex) {
-                var groupIndex = this[dc.constants.GROUP_INDEX_NAME];
-                return _chart.getChartStack().getDataPoint(groupIndex, dataIndex);
-            });
-
-        dc.transition(linePath, _chart.transitionDuration(),
-            function(t) {
-                t.ease("linear");
-            }).attr("d", line);
-        return line;
-    }
-
-    function drawArea(g, stackedCssClass, groupIndex, line) {
-        var areaPath = g.selectAll("path.area");
-
-        if (areaPath.empty())
-            areaPath = g.append("path")
-                .attr("class", "area " + stackedCssClass);
-
-        areaPath[0][0][dc.constants.GROUP_INDEX_NAME] = groupIndex;
-
-        var area = d3.svg.area()
-            .x(line.x())
-            .y1(line.y())
-            .y0(function(d, dataIndex) {
-                var groupIndex = this[dc.constants.GROUP_INDEX_NAME];
-                if (groupIndex == 0) return _chart.y()(0) - AREA_BOTTOM_PADDING + _chart.margins().top;
-                return _chart.getChartStack().getDataPoint(groupIndex - 1, dataIndex);
-            });
-
-        dc.transition(areaPath, _chart.transitionDuration(),
-            function(t) {
-                t.ease("linear");
-            }).attr("d", area);
-    }
-
-    _chart.renderArea = function(_) {
-        if (!arguments.length) return _renderArea;
-        _renderArea = _;
-        return _chart;
-    };
-
-    return _chart.anchor(_parent);
-};
 
 dc.dataCount = function(_parent) {
     var _formatNumber = d3.format(",f");
@@ -1414,376 +1339,4 @@ dc.dataCount = function(_parent) {
 
     return _chart.anchor(_parent);
 };
-dc.dataTable = function(_parent) {
-    var _chart = dc.baseChart({});
 
-    var _size = 25;
-    var _columns = [];
-    var _sortBy = function(d) {
-        return d;
-    };
-    var _order = d3.ascending;
-    var _sort;
-
-    _chart.render = function() {
-        _chart.selectAll("div.row").remove();
-
-        renderRows(renderGroups());
-
-        return _chart;
-    };
-
-    function renderGroups() {
-        var groups = _chart.root().selectAll("div.group")
-            .data(nestEntries(), function(d) {
-                return _chart.keyRetriever()(d);
-            });
-
-        groups.enter().append("div")
-            .attr("class", "group")
-            .append("span")
-            .attr("class", "label")
-            .text(function(d) {
-                return _chart.keyRetriever()(d);
-            });
-
-        groups.exit().remove();
-
-        return groups;
-    }
-
-    function nestEntries() {
-        if (!_sort)
-            _sort = crossfilter.quicksort.by(_sortBy);
-
-        var entries = _chart.dimension().top(_size);
-
-        return d3.nest()
-            .key(_chart.group())
-            .sortKeys(_order)
-            .entries(_sort(entries, 0, entries.length));
-    }
-
-    function renderRows(groups) {
-        var rows = groups.order()
-            .selectAll("div.row")
-            .data(function(d) {
-                return d.values;
-            });
-
-        var rowEnter = rows.enter()
-            .append("div")
-            .attr("class", "row");
-
-        for (var i = 0; i < _columns.length; ++i) {
-            var f = _columns[i];
-            rowEnter.append("span")
-                .attr("class", "column " + i)
-                .text(function(d) {
-                    return f(d);
-                });
-        }
-
-        rows.exit().remove();
-
-        return rows;
-    }
-
-    _chart.redraw = function() {
-        return _chart.render();
-    };
-
-    _chart.size = function(s) {
-        if (!arguments.length) return _size;
-        _size = s;
-        return _chart;
-    };
-
-    _chart.columns = function(_) {
-        if (!arguments.length) return _columns;
-        _columns = _;
-        return _chart;
-    };
-
-    _chart.sortBy = function(_) {
-        if (!arguments.length) return _sortBy;
-        _sortBy = _;
-        return _chart;
-    };
-
-    _chart.order = function(_) {
-        if (!arguments.length) return _order;
-        _order = _;
-        return _chart;
-    };
-
-    return _chart.anchor(_parent);
-};
-dc.bubbleChart = function(_parent) {
-    var NODE_CLASS = "node";
-    var BUBBLE_CLASS = "bubble";
-    var MIN_RADIUS = 10;
-
-    var _chart = dc.singleSelectionChart(dc.colorChart(dc.coordinateGridChart({})));
-
-    _chart.renderLabel(true);
-    _chart.renderTitle(false);
-
-    var _r = d3.scale.linear().domain([0, 100]);
-    var _rValueRetriever = function(d) {
-        return d.r;
-    };
-
-    _chart.transitionDuration(750);
-
-    var bubbleLocator = function(d) {
-        return "translate(" + (bubbleX(d)) + "," + (bubbleY(d)) + ")";
-    };
-
-    _chart.plotData = function() {
-         _r.range([0, _chart.xAxisLength() / 3]);
-
-        var bubbleG = _chart.g().selectAll("g." + NODE_CLASS)
-            .data(_chart.group().all());
-
-        renderNodes(bubbleG);
-
-        updateNodes(bubbleG);
-
-        removeNodes(bubbleG);
-
-        _chart.fadeDeselectedArea();
-    };
-
-    function renderNodes(bubbleG) {
-        var bubbleGEnter = bubbleG.enter().append("g");
-        bubbleGEnter
-            .attr("class", NODE_CLASS)
-            .attr("transform", bubbleLocator)
-            .append("circle").attr("class", function(d, i) {
-                return BUBBLE_CLASS + " " + i;
-            })
-            .on("click", onClick)
-            .attr("fill", function(d, i) {
-                return _chart.colors()(i);
-            })
-            .attr("r", 0);
-        dc.transition(bubbleG, _chart.transitionDuration())
-            .attr("r", function(d) {
-                return bubbleR(d);
-            });
-
-        renderLabel(bubbleGEnter);
-
-        renderTitles(bubbleGEnter);
-    }
-
-    var labelFunction = function(d) {
-        return bubbleR(d) > MIN_RADIUS ? _chart.label()(d) : "";
-    };
-
-    function renderLabel(bubbleGEnter) {
-        if (_chart.renderLabel()) {
-
-            bubbleGEnter.append("text")
-                .attr("text-anchor", "middle")
-                .attr("dy", ".3em")
-                .on("click", onClick)
-                .text(labelFunction);
-        }
-    }
-
-    function updateLabels(bubbleGEnter) {
-        if (_chart.renderLabel()) {
-            bubbleGEnter.selectAll("text")
-                .text(labelFunction);
-        }
-    }
-
-    var titleFunction = function(d) {
-        return _chart.title()(d);
-    };
-
-    function renderTitles(g) {
-        if (_chart.renderTitle()) {
-            g.append("title").text(titleFunction);
-        }
-    }
-
-    function updateTitles(g) {
-        if (_chart.renderTitle()) {
-            g.selectAll("title").text(titleFunction);
-        }
-    }
-
-    function updateNodes(bubbleG) {
-        dc.transition(bubbleG, _chart.transitionDuration())
-            .attr("transform", bubbleLocator)
-            .selectAll("circle." + BUBBLE_CLASS)
-            .attr("r", function(d) {
-                return bubbleR(d);
-            });
-        updateLabels(bubbleG);
-        updateTitles(bubbleG);
-    }
-
-    function removeNodes(bubbleG) {
-        dc.transition(bubbleG.exit().selectAll("circle." + BUBBLE_CLASS), _chart.transitionDuration())
-            .attr("r", 0)
-            .remove();
-    }
-
-    var onClick = function(d) {
-        _chart.filter(d.key);
-        dc.redrawAll();
-    };
-
-    function bubbleX(d) {
-        return _chart.x()(_chart.keyRetriever()(d)) + _chart.margins().left;
-    }
-
-    function bubbleY(d) {
-        return _chart.margins().top + _chart.y()(_chart.valueRetriever()(d));
-    }
-
-    function bubbleR(d) {
-        return _chart.r()(_chart.radiusValueRetriever()(d));
-    }
-
-    _chart.renderBrush = function(g) {
-        // override default x axis brush from parent chart
-    };
-
-    _chart.redrawBrush = function(g) {
-        // override default x axis brush from parent chart
-        _chart.fadeDeselectedArea();
-    };
-
-    _chart.fadeDeselectedArea = function() {
-        var normalOpacity = 1;
-        var fadeOpacity = 0.1;
-        if (_chart.hasFilter()) {
-            _chart.selectAll("g." + NODE_CLASS).select("circle").each(function(d) {
-                if (_chart.isSelectedSlice(d)) {
-                    _chart.highlightSelected(this);
-                } else {
-                    _chart.fadeDeselected(this);
-                }
-            });
-        } else {
-            _chart.selectAll("g." + NODE_CLASS).selectAll("circle").each(function(d) {
-                _chart.resetHighlight(this);
-            });
-        }
-    };
-
-    _chart.isSelectedSlice = function(d) {
-        return _chart.filter() == d.key;
-    };
-
-    _chart.r = function(_) {
-        if (!arguments.length) return _r;
-        _r = _;
-        return _chart;
-    };
-
-    _chart.radiusValueRetriever = function(_) {
-        if (!arguments.length) return _rValueRetriever;
-        _rValueRetriever = _;
-        return _chart;
-    };
-
-    return _chart.anchor(_parent);
-};
-dc.compositeChart = function(_parent) {
-    var SUB_CHART_CLASS = "sub";
-
-    var _chart = dc.coordinateGridChart({});
-    var _children = [];
-
-    _chart.transitionDuration(500);
-
-    dc.override(_chart, "generateG", function(_super) {
-        for (var i = 0; i < _children.length; ++i) {
-            var child = _children[i];
-            if (child.dimension() == null) child.dimension(_chart.dimension());
-            if (child.group() == null) child.group(_chart.group());
-            child.svg(_chart.svg());
-            child.height(_chart.height());
-            child.width(_chart.width());
-            child.margins(_chart.margins());
-            child.xUnits(_chart.xUnits());
-            child.transitionDuration(_chart.transitionDuration());
-            child.generateG();
-            child.g().attr("class", SUB_CHART_CLASS);
-        }
-
-        return _super();
-    });
-
-    _chart.plotData = function() {
-        for (var i = 0; i < _children.length; ++i) {
-            var child = _children[i];
-            child.x(_chart.x());
-            child.y(_chart.y());
-            child.xAxis(_chart.xAxis());
-            child.yAxis(_chart.yAxis());
-
-            child.plotData();
-        }
-    };
-
-    _chart.fadeDeselectedArea = function() {
-        for (var i = 0; i < _children.length; ++i) {
-            var child = _children[i];
-            child.brush(_chart.brush());
-
-            child.fadeDeselectedArea();
-        }
-    };
-
-    _chart.compose = function(charts) {
-        _children = charts;
-        return _chart;
-    };
-
-    function getAllYAxisMinFromChildCharts() {
-        var allMins = [];
-        for (var i = 0; i < _children.length; ++i) {
-            allMins.push(_children[i].yAxisMin());
-        }
-        return allMins;
-    }
-
-    _chart.yAxisMin = function() {
-        return d3.min(getAllYAxisMinFromChildCharts());
-    };
-
-    function getAllYAxisMaxFromChildCharts() {
-        var allMaxs = [];
-        for (var i = 0; i < _children.length; ++i) {
-            allMaxs.push(_children[i].yAxisMax());
-        }
-        return allMaxs;
-    }
-
-    _chart.yAxisMax = function() {
-        return d3.max(getAllYAxisMaxFromChildCharts());
-    };
-
-    function combineAllGroups() {
-        var allGroups = [];
-
-        allGroups.push(_chart.group());
-
-        for (var i = 0; i < _children.length; ++i) {
-            var groups = _children[i].allGroups();
-            for (var j = 0; j < groups.length; ++j)
-                allGroups.push(groups[j]);
-        }
-
-        return allGroups;
-    }
-
-    return _chart.anchor(_parent);
-};

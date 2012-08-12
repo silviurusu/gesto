@@ -102,7 +102,7 @@ d3.csv("/json/", function(sales) {
         .elasticY(true)
 //        .round(d3.time.day)
         .x(d3.time.scale()
-        .domain([Date.today().addDays(-33), Date.today().addDays(5)]))
+        .domain([Date.today().addDays(-30), Date.today().addDays(1)]))
         .xUnits(d3.time.days)
         .filter([Date.today().moveToDayOfWeek(1, -1), today]);
 

@@ -151,12 +151,12 @@ h1, h2 {
     fill: none;
 }
 
-.x.axis line {
+.axis.y line {
     stroke: #fff;
     stroke-opacity: .8;
 }
 
-.y.axis path {
+.axis.y path {
     stroke: black;
 }
 
