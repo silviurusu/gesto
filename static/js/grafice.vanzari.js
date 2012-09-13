@@ -12,7 +12,7 @@ d3.csv("/json/", function(sales) {
     sales.forEach(function(d, i) {
         d.index = i;
         d.date = parseDate(d.at);
-        d.val = Math.floor(+d.price * +d.qty);
+        d.val = (+d.price * +d.qty).toFixed(2);
     });
 
     var sales = crossfilter(sales);
@@ -172,6 +172,7 @@ d3.csv("/json/", function(sales) {
         $('.all').toggleClass('activeGest');
         $('.activeday').toggleClass('activeday');
         $('.nav .reset').hide();
+        $('form .btn.reset').hide();
         gestiune.filter(null);
         dc.filterAll();
         dc.redrawAll();
@@ -186,6 +187,7 @@ $('#filterProduct').typeahead({
     items:3,
     source:["Strudel visine","Strudel mere","Grilias","Branzoaica","Cappuccino","Schweppes","Sandwich","Amandina"],
     updater:function(item){
-        filterProduct(item)
+        filterProduct(item);
+        $('form .btn.reset').show();
         return item;}
 })

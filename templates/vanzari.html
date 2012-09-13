@@ -46,7 +46,9 @@
                             Product
                         </li>
                         <li>
-                            <input id="filterProduct" type="text" class="span8" data-provide="typeahead">
+                            <form class="input-append">
+                                <input id="filterProduct" type="text" class="input-medium" placeholder="denumire produs" data-provide="typeahead"><a class="btn reset" href="javascript:void(0)"  onclick="product.filterAll();dc.redrawAll();" style="display:none">&times;</a>
+                            </form>
                         </li>
 
                     </ul>
@@ -83,7 +85,7 @@
                 </div>
                 <div class="row-fluid">
                     <div id="bar-chart-day" class="chart">
-                        <div class="title">Date<a class="reset" href="javascript:void(0)"  onclick="reset()" style="display: none;">reset</a></div>
+                        <div class="title">Date<a class="reset" href="javascript:void(0)"  onclick="barChartDay.filterAll();dc.redrawAll();" style="display: none;">reset</a></div>
                     </div>
                 </div>
             </div>

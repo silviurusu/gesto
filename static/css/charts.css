@@ -172,3 +172,7 @@ h1, h2 {
     background-color: #0088cc !important;
     text-align: right;
 }
+
+.activeProduct a{
+    font-size: 18px;
+}
