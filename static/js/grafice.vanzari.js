@@ -167,7 +167,7 @@ d3.csv("/json/", function(sales) {
             d.substring(14, 16));
     }
 
-    window.reset = function() {
+   window.reset = function() {
         $('.activeGest').toggleClass('activeGest');
         $('.all').toggleClass('activeGest');
         $('.activeday').toggleClass('activeday');
@@ -176,7 +176,12 @@ d3.csv("/json/", function(sales) {
         gestiune.filter(null);
         dc.filterAll();
         dc.redrawAll();
-//        dc.renderAll();
+    };
+   window.productReset = function() {
+       $('#filterProduct').val("");
+       $('form .btn.reset').hide();
+        product.filterAll();
+        dc.redrawAll();
     };
 
 });
