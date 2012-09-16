@@ -1,5 +1,6 @@
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.core.files.move import file_move_safe
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
@@ -107,3 +108,12 @@ def nginx_accel(request):
         return response
 
     return HttpResponseForbidden()
+
+def productList(request):
+
+    query = request.GET.get('query')
+
+    products = Product.objects.filter(name__startswith=query)
+    products = serializers.serialize('json', products, fields=('name'))
+
+    return HttpResponse(products, mimetype="application/json")

@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     (r'^stocuri/$', login_required(direct_to_template), { 'template': 'stocuri.html' }, 'stocuriurl'),
     (r'^import/$', 'charts.views.csv_to_sales'),
     (r'^export/$', 'charts.views.sales_to_json'),
+    (r'^products/$', 'charts.views.productList'),
     (r'^json/$', 'charts.views.nginx_accel'),
     (r'^accounts/', include('userena.urls')),
 )
