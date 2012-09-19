@@ -189,17 +189,16 @@ d3.csv("/json/", function(sales) {
 
 
 $('#filterProduct').typeahead({
-    items:3,
-    source:["Strudel visine","Strudel mere","Tort creme caramel","Branzoaica","Cappuccino","Schweppes","Sandwich","Amandina"],
-//    source:   function (query, process) {
-//                return $.get('/products/', {query: query }, function (data) {
-//                    labels = []
-//                    $.each(data, function(i,item) {
-//                        labels.push(item.name);
-//                    });
-//                    return process(labels);
-//                })
-//    },
+    items:8,
+    source:   function (query, process) {
+                return $.get('/products/', {query: query }, function (data) {
+                    labels = []
+                    $.each(data, function(i,item) {
+                        labels.push(item.name);
+                    });
+                    return process(labels);
+                })
+    },
     updater:function(item){
                 filterProduct(item);
                 $('form .btn.reset').show();

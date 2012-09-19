@@ -112,8 +112,11 @@ def nginx_accel(request):
 def productList(request):
 
     query = request.GET.get('query')
-
-    products = Product.objects.filter(name__startswith=query)
+#    check for empty query
+#    not case sensitive cases
+#    sanitize?
+    products = Product.objects.filter(name__istartswith=query)
     products = serializers.serialize('json', products, fields=('name'))
-
+    print query
+    print products
     return HttpResponse(products, mimetype="application/json")
