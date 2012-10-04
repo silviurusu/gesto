@@ -6,7 +6,8 @@ d3.csv("/json/", function(sales) {
     var formatNumber = d3.format("d"),
         formatFloat = d3.format("f"),
         formatDate = d3.time.format("%B %d, %Y"),
-        formatTime = d3.time.format("%I:%M %p");
+        formatTime = d3.time.format("%I:%M %p"),
+        sod = 6;//start of day hour
 
     // A little coercion, since the CSV is untyped.
     sales.forEach(function(d, i) {
@@ -49,9 +50,9 @@ d3.csv("/json/", function(sales) {
 //        products = product.group(),
        category = sales.dimension(function(d) { return d.category}),
        categories = category.group().reduceSum(function(d) { return d.val; }),
-        gestiune = sales.dimension(function (d){ return d.gestiune;}),
+        gestiune = sales.dimension(function (d){ return d.gestiune;});
 //        gestiuni = gestiune.group(),
-        today = new Date();
+//        today = new Date();
 
 
    window.pieChartDOW = dc.pieChart("#pie-chart-dow")
@@ -102,9 +103,9 @@ d3.csv("/json/", function(sales) {
         .elasticY(true)
         .round(d3.time.day.round)
         .x(d3.time.scale()
-        .domain([Date.today().addDays(-30), Date.today().addDays(1)]))
+        .domain([moment().subtract('days',30), moment().add('days',1)]))
         .xUnits(d3.time.days)
-        .filter([Date.today().moveToDayOfWeek(1, -1), today]);
+        .filter([moment().day(1), moment().endOf('day')]);
 
     dc.dataCount("#data-count")
         .dimension(sales)
@@ -117,19 +118,19 @@ d3.csv("/json/", function(sales) {
         switch(tab.className)
         {
             case 'today':
-                barChartDay.filter([Date.today(), today]);
+                barChartDay.filter([moment().startOf('day').hours(sod), moment().endOf('day')]);
                 break;
             case 'yesterday':
-                barChartDay.filter([Date.today().addDays(-1), Date.today()]);
+                barChartDay.filter([moment().subtract('days',1).hours(sod), moment().hours(sod)]);
                 break;
             case 'currentweek':
-                barChartDay.filter([Date.today().moveToDayOfWeek(1, -1), today]);
+                barChartDay.filter([moment().day(1).hours(sod), moment().endOf('day')]);
                 break;
             case 'lastweek':
-                barChartDay.filter([Date.today().moveToDayOfWeek(1, -1).addDays(-7), Date.today().moveToDayOfWeek(1, -1)]);
+                barChartDay.filter([moment().day(-6).hours(sod).startOf('hour'), moment().day(1).hours(sod).startOf('hour')]);
                 break;
             default:
-                barChartDay.filter([Date.today().moveToDayOfWeek(1, -1), today]);
+                barChartDay.filter([moment().day(1).hours(sod), moment().endOf('day')]);
         }
         $(tab).toggleClass('activeday');
         $('.nav .reset').show();
