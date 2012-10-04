@@ -121,19 +121,19 @@ d3.csv("/json/", function(sales) {
         switch(tab.className)
         {
             case 'today':
-                barChartDay.filter([moment().startOf('day').hours(sod), moment().endOf('day')]);
+                barChartDay.filter([moment().startOf('day'), moment().endOf('day')]);
                 break;
             case 'yesterday':
-                barChartDay.filter([moment().subtract('days',1).hours(sod), moment().hours(sod)]);
+                barChartDay.filter([moment().subtract('days',1).startOf('day'), moment().endOf('day')]);
                 break;
             case 'currentweek':
-                barChartDay.filter([moment().day(1).hours(sod), moment().endOf('day')]);
+                barChartDay.filter([moment().day(1).startOf('day'), moment().endOf('day')]);
                 break;
             case 'lastweek':
-                barChartDay.filter([moment().day(-6).hours(sod).startOf('hour'), moment().day(1).hours(sod).startOf('hour')]);
+                barChartDay.filter([moment().day(-6).startOf('day'), moment().day(1).startOf('day')]);
                 break;
             default:
-                barChartDay.filter([moment().day(1).hours(sod), moment().endOf('day')]);
+                barChartDay.filter([moment().day(1).startOf('day'), moment().endOf('day')]);
         }
         $(tab).toggleClass('activeday');
         $('.nav .reset').show();
