@@ -124,7 +124,7 @@ d3.csv("/json/", function(sales) {
                 barChartDay.filter([moment().startOf('day'), moment().endOf('day')]);
                 break;
             case 'yesterday':
-                barChartDay.filter([moment().subtract('days',1).startOf('day'), moment().endOf('day')]);
+                barChartDay.filter([moment().subtract('days',1).startOf('day'), moment().subtract('days',1).endOf('day')]);
                 break;
             case 'currentweek':
                 barChartDay.filter([moment().day(1).startOf('day'), moment().endOf('day')]);
