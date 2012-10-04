@@ -100,7 +100,7 @@ d3.csv("/json/", function(sales) {
         .dimension(day)
         .group(days)
         .elasticY(true)
-//        .round(d3.time.day)
+        .round(d3.time.day.round)
         .x(d3.time.scale()
         .domain([Date.today().addDays(-30), Date.today().addDays(1)]))
         .xUnits(d3.time.days)
