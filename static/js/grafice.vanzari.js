@@ -106,7 +106,7 @@ d3.csv("/json/", function(sales) {
         .elasticY(true)
         .round(d3.time.day.round)
         .x(d3.time.scale()
-        .domain([moment().subtract('days',31), moment().add('days',1)]))
+        .domain([moment().subtract('days',31).startOf('day'), moment().add('days',1).endOf('day')]))
         .xUnits(d3.time.days)
         .filter([moment().day(1), moment().endOf('day')]);
 
