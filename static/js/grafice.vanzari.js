@@ -111,7 +111,7 @@ d3.csv("/json/", function(sales) {
         .x(d3.time.scale()
         .domain([moment().subtract('days',31).startOf('day'), moment().add('days',1).endOf('day')]))
         .xUnits(d3.time.days)
-        .filter([moment().day(1), moment().endOf('day')]);
+        .filter([moment().day(1).startOf('day'), moment().endOf('day')]);
 
     dc.dataCount("#data-count")
         .dimension(sales)
