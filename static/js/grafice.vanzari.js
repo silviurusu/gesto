@@ -63,7 +63,7 @@ d3.csv("/json/", function(sales) {
        .dimension(dayOfWeek)
        .group(dayOfWeekGroup)
        .title(function(d) {
-           return d.data.key + ": " + d.data.value;
+           return d.data.key + ": " + d.data.value.toFixed();
        })
        .renderTitle(true);
 
@@ -73,6 +73,9 @@ d3.csv("/json/", function(sales) {
        .radius(90)
        .dimension(category)
        .group(categories)
+       .title(function(d) {
+           return d.data.key + ": " + d.data.value.toFixed();
+       })
        .renderTitle(true);
 
     window.barChartHour = dc.barChart("#bar-chart-hour")

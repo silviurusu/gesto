@@ -724,7 +724,7 @@ dc.coordinateGridChart = function(_chart) {
         }
 
         _x.range([0, _chart.xAxisLength()]);
-        _xAxis = _xAxis.scale(_chart.x()).orient("bottom");
+        _xAxis = _xAxis.scale(_chart.x()).orient("bottom").ticks(7);
 
         renderVerticalGridLines(g);
     }
@@ -1792,8 +1792,8 @@ dc.dataCount = function(_parent) {
             y = _formatNumber(c).length;
         _chart.selectAll(".filter-sales").text(_formatNumber(t)).style('font-size', d3.min([24,120/x])+'px');
         _chart.selectAll(".customer-count").text(_formatNumber(c)).style('font-size', d3.min([24,120/y])+'px');
-        _chart.selectAll(".qty-sum").text(_formatNumber(p));
-        _chart.selectAll(".average-count").text(_formatNumber(t/c));
+        _chart.selectAll(".qty-sum").text(_formatNumber(p)).style('font-size', d3.min([24,120/y])+'px');
+        _chart.selectAll(".average-count").text(_formatNumber(t/c)).style('font-size', d3.min([24,120/y])+'px');
 
         return _chart;
     };
