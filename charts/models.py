@@ -4,7 +4,7 @@ from django.db import models
 from userena.models import *
 
 
-class Profile(UserenaBaseProfile):
+class UserProfile(UserenaBaseProfile):
 
     user = models.OneToOneField(User,
         unique=True,
@@ -13,9 +13,10 @@ class Profile(UserenaBaseProfile):
     company = models.ForeignKey('Company', related_name='user_profiles')
 
 class Company(models.Model):
-    name = models.CharField(max_length=50)
-    vat = models.CharField(max_length=12)
-    no = models.CharField(max_length=20)
+    name = models.CharField(max_length = 50)
+    vat = models.CharField(max_length = 12)
+    no = models.CharField(max_length = 20)
+    active = models.BooleanField(default = True)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
 

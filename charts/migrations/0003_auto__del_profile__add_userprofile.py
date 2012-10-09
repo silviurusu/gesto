@@ -8,118 +8,33 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Profile'
-        db.create_table('charts_profile', (
+        # Deleting model 'Profile'
+        db.delete_table('charts_profile')
+
+        # Adding model 'UserProfile'
+        db.create_table('charts_userprofile', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('mugshot', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
             ('privacy', self.gf('django.db.models.fields.CharField')(default='registered', max_length=15)),
             ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='profile', unique=True, to=orm['auth.User'])),
             ('company', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_profiles', to=orm['charts.Company'])),
         ))
-        db.send_create_signal('charts', ['Profile'])
-
-        # Adding model 'Company'
-        db.create_table('charts_company', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('vat', self.gf('django.db.models.fields.CharField')(max_length=12)),
-            ('no', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('charts', ['Company'])
-
-        # Adding model 'Category'
-        db.create_table('charts_category', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-        ))
-        db.send_create_signal('charts', ['Category'])
-
-        # Adding model 'Product'
-        db.create_table('charts_product', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('code', self.gf('django.db.models.fields.CharField')(max_length=10)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('dep', self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['charts.Category'])),
-            ('qty', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
-            ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('charts', ['Product'])
-
-        # Adding model 'OperationType'
-        db.create_table('charts_operationtype', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-        ))
-        db.send_create_signal('charts', ['OperationType'])
-
-        # Adding model 'Operation'
-        db.create_table('charts_operation', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['charts.OperationType'])),
-            ('gestiune', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['charts.Gestiune'])),
-            ('operation_at', self.gf('django.db.models.fields.DateTimeField')()),
-            ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('charts', ['Operation'])
-
-        # Adding model 'OperationItems'
-        db.create_table('charts_operationitems', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('operation', self.gf('django.db.models.fields.related.ForeignKey')(related_name='items', to=orm['charts.Operation'])),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(related_name='operations', to=orm['charts.Product'])),
-            ('qty', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2)),
-            ('price', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2)),
-        ))
-        db.send_create_signal('charts', ['OperationItems'])
-
-        # Adding model 'Gestiune'
-        db.create_table('charts_gestiune', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-        ))
-        db.send_create_signal('charts', ['Gestiune'])
-
-        # Adding model 'Stoc'
-        db.create_table('charts_stoc', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('gestiune', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['charts.Gestiune'])),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['charts.Product'])),
-            ('qty', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2)),
-        ))
-        db.send_create_signal('charts', ['Stoc'])
+        db.send_create_signal('charts', ['UserProfile'])
 
 
     def backwards(self, orm):
-        # Deleting model 'Profile'
-        db.delete_table('charts_profile')
+        # Adding model 'Profile'
+        db.create_table('charts_profile', (
+            ('privacy', self.gf('django.db.models.fields.CharField')(default='registered', max_length=15)),
+            ('company', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_profiles', to=orm['charts.Company'])),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='profile', unique=True, to=orm['auth.User'])),
+            ('mugshot', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        ))
+        db.send_create_signal('charts', ['Profile'])
 
-        # Deleting model 'Company'
-        db.delete_table('charts_company')
-
-        # Deleting model 'Category'
-        db.delete_table('charts_category')
-
-        # Deleting model 'Product'
-        db.delete_table('charts_product')
-
-        # Deleting model 'OperationType'
-        db.delete_table('charts_operationtype')
-
-        # Deleting model 'Operation'
-        db.delete_table('charts_operation')
-
-        # Deleting model 'OperationItems'
-        db.delete_table('charts_operationitems')
-
-        # Deleting model 'Gestiune'
-        db.delete_table('charts_gestiune')
-
-        # Deleting model 'Stoc'
-        db.delete_table('charts_stoc')
+        # Deleting model 'UserProfile'
+        db.delete_table('charts_userprofile')
 
 
     models = {
@@ -159,6 +74,7 @@ class Migration(SchemaMigration):
         },
         'charts.company': {
             'Meta': {'object_name': 'Company'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
@@ -203,20 +119,20 @@ class Migration(SchemaMigration):
             'qty': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '5', 'decimal_places': '2'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
-        'charts.profile': {
-            'Meta': {'object_name': 'Profile'},
-            'company': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_profiles'", 'to': "orm['charts.Company']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mugshot': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'privacy': ('django.db.models.fields.CharField', [], {'default': "'registered'", 'max_length': '15'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': "orm['auth.User']"})
-        },
         'charts.stoc': {
             'Meta': {'object_name': 'Stoc'},
             'gestiune': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['charts.Gestiune']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['charts.Product']"}),
             'qty': ('django.db.models.fields.DecimalField', [], {'max_digits': '5', 'decimal_places': '2'})
+        },
+        'charts.userprofile': {
+            'Meta': {'object_name': 'UserProfile'},
+            'company': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_profiles'", 'to': "orm['charts.Company']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mugshot': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
+            'privacy': ('django.db.models.fields.CharField', [], {'default': "'registered'", 'max_length': '15'}),
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': "orm['auth.User']"})
         },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},

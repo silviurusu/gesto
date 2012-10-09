@@ -8,15 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Product.dep'
-        db.add_column('charts_product', 'dep',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['charts.Category']),
+        # Adding field 'Company.active'
+        db.add_column('charts_company', 'active',
+                      self.gf('django.db.models.fields.BooleanField')(default=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'Product.dep'
-        db.delete_column('charts_product', 'dep_id')
+        # Deleting field 'Company.active'
+        db.delete_column('charts_company', 'active')
 
 
     models = {
@@ -53,6 +53,16 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Category'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+        },
+        'charts.company': {
+            'Meta': {'object_name': 'Company'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'no': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'vat': ('django.db.models.fields.CharField', [], {'max_length': '12'})
         },
         'charts.gestiune': {
             'Meta': {'object_name': 'Gestiune'},
@@ -93,8 +103,8 @@ class Migration(SchemaMigration):
         },
         'charts.profile': {
             'Meta': {'object_name': 'Profile'},
+            'company': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_profiles'", 'to': "orm['charts.Company']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'language': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '5'}),
             'mugshot': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'privacy': ('django.db.models.fields.CharField', [], {'default': "'registered'", 'max_length': '15'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': "orm['auth.User']"})

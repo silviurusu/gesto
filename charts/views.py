@@ -87,18 +87,8 @@ def sales_to_json(request):
 
 @login_required
 def nginx_accel(request):
-    '''
-    default django view, where id is an argument that identifies
-    the ressource to be protected
-    '''
-    allowed = False
 
-    # do your permission things here, and set allowed to True if applicable
-    if request.user.email == 'a@a.com':
-        allowed = True
-
-
-    if allowed:
+    if request.user.profile.company.active:
         response = HttpResponse()
         url = '/protected/sales.csv' # this will obviously be different for every ressource
         # let nginx determine the correct content type
