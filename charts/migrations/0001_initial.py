@@ -8,15 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Profile'
-        db.create_table('charts_profile', (
+        # Adding model 'UserProfile'
+        db.create_table('charts_userprofile', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('mugshot', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
             ('privacy', self.gf('django.db.models.fields.CharField')(default='registered', max_length=15)),
             ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='profile', unique=True, to=orm['auth.User'])),
             ('company', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_profiles', to=orm['charts.Company'])),
         ))
-        db.send_create_signal('charts', ['Profile'])
+        db.send_create_signal('charts', ['UserProfile'])
 
         # Adding model 'Company'
         db.create_table('charts_company', (
@@ -24,6 +24,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('vat', self.gf('django.db.models.fields.CharField')(max_length=12)),
             ('no', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('active', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
@@ -94,8 +95,8 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Deleting model 'Profile'
-        db.delete_table('charts_profile')
+        # Deleting model 'UserProfile'
+        db.delete_table('charts_userprofile')
 
         # Deleting model 'Company'
         db.delete_table('charts_company')
@@ -159,6 +160,7 @@ class Migration(SchemaMigration):
         },
         'charts.company': {
             'Meta': {'object_name': 'Company'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
@@ -203,20 +205,20 @@ class Migration(SchemaMigration):
             'qty': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '5', 'decimal_places': '2'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
-        'charts.profile': {
-            'Meta': {'object_name': 'Profile'},
-            'company': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_profiles'", 'to': "orm['charts.Company']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mugshot': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'privacy': ('django.db.models.fields.CharField', [], {'default': "'registered'", 'max_length': '15'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': "orm['auth.User']"})
-        },
         'charts.stoc': {
             'Meta': {'object_name': 'Stoc'},
             'gestiune': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['charts.Gestiune']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['charts.Product']"}),
             'qty': ('django.db.models.fields.DecimalField', [], {'max_digits': '5', 'decimal_places': '2'})
+        },
+        'charts.userprofile': {
+            'Meta': {'object_name': 'UserProfile'},
+            'company': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_profiles'", 'to': "orm['charts.Company']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mugshot': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
+            'privacy': ('django.db.models.fields.CharField', [], {'default': "'registered'", 'max_length': '15'}),
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': "orm['auth.User']"})
         },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
