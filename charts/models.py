@@ -43,7 +43,7 @@ class OperationType(models.Model):
 class Operation (models.Model):
 
     type = models.ForeignKey(OperationType)
-    gestiune = models.ForeignKey('Gestiune')
+    location = models.ForeignKey('Location', null=False, related_name='operations')
     operation_at = models.DateTimeField()
 
     created_at = models.DateTimeField(auto_now_add = True)
@@ -53,15 +53,16 @@ class Operation (models.Model):
 
 class OperationItems (models.Model):
     operation = models.ForeignKey(Operation,  null=False, related_name = 'items')
-    product = models.ForeignKey(Product,  null=False, related_name = 'operations')
+    product = models.ForeignKey(Product,  null=False, related_name = '+')
     qty = models.DecimalField(null=False, max_digits=5, decimal_places=2)
     price = models.DecimalField(null=False, max_digits=5, decimal_places=2)
 
-class Gestiune (models.Model):
+class Location (models.Model):
     name = models.CharField(max_length=50)
+    company = models.ForeignKey(Company, null=False, related_name ='locations')
 
-class Stoc(models.Model):
+class Stock(models.Model):
 
-    gestiune = models.ForeignKey(Gestiune)
+    location = models.ForeignKey(Location)
     product = models.ForeignKey(Product)
     qty = models.DecimalField(null=False, max_digits=5, decimal_places=2)
