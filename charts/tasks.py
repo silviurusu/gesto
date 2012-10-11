@@ -28,7 +28,7 @@ def sales_custom_sql(company_id):
                                         AND charts_operation.id = charts_operationitems.operation_id \
                                         AND charts_operationitems.product_id = charts_product.id \
                                         AND charts_location.id = location_id \
-                                        AND charts_location.company_id = "'+company_id+'" \
+                                        AND charts_location.company_id = "'+str(company_id)+'" \
                                         AND charts_product.dep_id = charts_category.id ')
     rows = cursor.fetchall()
 
@@ -45,7 +45,7 @@ def csv_to_sales():
         files = os.listdir(path)
         count = 0
         for file in files:
-            filePath = os.path.join(CSV_PATH, file)
+            filePath = os.path.join(path, file)
             if os.path.isfile(filePath) and file.endswith("sale"):
 
                 fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
