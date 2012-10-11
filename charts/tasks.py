@@ -84,7 +84,7 @@ def csv_to_sales():
 @celery.task()
 def sales_to_json():
     for company in Company.objects.filter(active=1):
-        sales = my_custom_sql(company.id)
+        sales = sales_custom_sql(company.id)
         filePath = os.path.join(PROTECTEDFILES_DIR, company.name, '', 'sales.csv')
         fieldnames = ['price','qty','gestiune','product','category','at','id']
         with open(filePath,'wb') as f:
