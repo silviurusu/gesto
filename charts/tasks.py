@@ -71,19 +71,19 @@ def csv_to_sales():
 
                         saleItem.save()
 
-                moveToPath = os.path.join(os.path.split(CSV_PATH)[0], company.name, file[0:3], file[3:5], file[5:7], file[7:9])
+                moveToPath = os.path.join(CSV_PATH, company.name, file[0:3], file[3:5], file[5:7], file[7:9])
                 if not os.path.exists(moveToPath):
                     os.makedirs(moveToPath)
                 #TODO:handle existing file
                 file_move_safe(filePath,  moveToPath + '/' + file)
                 count += 1
-        logger.info('Imported %s sales' % count )
+        logger.info('Imported %s sales, to %s' % count, company.name )
     return 'import done'
 
 
 @celery.task()
 def sales_to_json():
-    for company in Company.objects.filter(active=1):
+    for company in Company.objects.get(active=1):
         print company.name
         sales = sales_custom_sql(company.id)
         print len(sales)
