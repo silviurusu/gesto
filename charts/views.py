@@ -76,7 +76,6 @@ def my_custom_sql():
 
 def sales_to_json(request):
     sales = my_custom_sql()
-    print len(sales)
     filePath = os.path.join(PROTECTEDFILES_DIR, '', 'sales.csv')
     fieldnames = ['price','qty','gestiune','product','category','at','id']
     with open(filePath,'wb') as f:
@@ -110,6 +109,5 @@ def productList(request):
 #    sanitize?
     products = Product.objects.filter(name__istartswith=query)
     products = serializers.serialize('json', products, fields=('name'))
-    print query
-    print products
+
     return HttpResponse(products, mimetype="application/json")

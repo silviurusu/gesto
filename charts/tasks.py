@@ -29,7 +29,7 @@ def sales_custom_sql(company_id):
                                         AND charts_operationitems.product_id = charts_product.id \
                                         AND charts_location.id = location_id \
                                         AND charts_location.company_id = "'+str(company_id)+'" \
-                                        AND charts_product.dep_id = charts_category.id ')
+                                        AND charts_product.category_id = charts_category.id ')
     rows = cursor.fetchall()
 
     return rows
@@ -61,8 +61,8 @@ def csv_to_sales():
                     for row in dataReader:
 
                         saleItem = OperationItems()
-                        dep, created = Category.objects.get_or_create(name = row['dep'], company = company)
-                        product, created = Product.objects.get_or_create( code = row['code'], name = row['name'], dep = dep )
+                        category, created = Category.objects.get_or_create(name = row['dep'], company = company)
+                        product, created = Product.objects.get_or_create( code = row['code'], name = row['name'], category = category )
 
                         saleItem.operation = sale
                         saleItem.product = product
@@ -93,7 +93,7 @@ def sales_to_json():
             for row in sales:
                 dw.writerow(row)
 
-        logger.info('Exported sales')
-        return 'export done'
+        logger.info('Exported '+company.name+' sales')
+        return 'Exported '+company.name+' sales, done!'
 
 
