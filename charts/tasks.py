@@ -50,7 +50,7 @@ def csv_to_sales():
 
                 fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
                 operationType = OperationType.objects.get(name = 'sale')
-                location, created = Location.objects.get_or_create(name = file[:3])
+                location, created = Location.objects.get_or_create(name = file[:3], company = company)
                 sale = Operation.objects.create(type = operationType,
                     location = location,
                     operation_at = fileDate)
@@ -61,7 +61,7 @@ def csv_to_sales():
                     for row in dataReader:
 
                         saleItem = OperationItems()
-                        dep, created = Category.objects.get_or_create(name = row['dep'])
+                        dep, created = Category.objects.get_or_create(name = row['dep'], company = company)
                         product, created = Product.objects.get_or_create( code = row['code'], name = row['name'], dep = dep )
 
                         saleItem.operation = sale
@@ -71,7 +71,7 @@ def csv_to_sales():
 
                         saleItem.save()
 
-                moveToPath = os.path.join(os.path.split(CSV_PATH)[0], file[0:3], file[3:5], file[5:7], file[7:9])
+                moveToPath = os.path.join(os.path.split(CSV_PATH)[0], company.name, file[0:3], file[3:5], file[5:7], file[7:9])
                 if not os.path.exists(moveToPath):
                     os.makedirs(moveToPath)
                 #TODO:handle existing file

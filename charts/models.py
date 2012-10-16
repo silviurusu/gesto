@@ -25,6 +25,7 @@ class Company(models.Model):
 class Category (models.Model):
 
     name = models.CharField(max_length=50)
+    company = models.ForeignKey(Company, null=False, related_name ='categories')
 
 class Product (models.Model):
 
