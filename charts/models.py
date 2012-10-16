@@ -60,6 +60,7 @@ class OperationItems (models.Model):
 
 class Location (models.Model):
     name = models.CharField(max_length=50)
+    code = models.CharField(max_length=3)
     company = models.ForeignKey(Company, null=False, related_name ='locations')
 
 class Stock(models.Model):

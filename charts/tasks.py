@@ -21,7 +21,7 @@ def sales_custom_sql(company_id):
     s1 = datetime.datetime.strftime(int1.replace(hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
     s2 = datetime.datetime.strftime(int2.replace(hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
 
-    cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_location.name as gestiune, charts_product.name as product, charts_category.name as category, charts_operation.operation_at as at, charts_operation.id as id \
+    cursor.execute('SELECT  charts_operationitems.price as price, charts_operationitems.qty as qty, charts_location.code as location, charts_product.name as product, charts_category.name as category, charts_operation.operation_at as at, charts_operation.id as id \
                                         FROM charts_operationitems ,  charts_operation ,  charts_product ,  charts_location, charts_category \
                                         WHERE  `operation_at` <  "'+s2+'" \
                                         AND `operation_at` >  "'+s1+'" \
@@ -50,7 +50,7 @@ def csv_to_sales():
 
                 fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
                 operationType = OperationType.objects.get(name = 'sale')
-                location, created = Location.objects.get_or_create(name = file[:3], company = company)
+                location, created = Location.objects.get_or_create(code = file[:3], company = company)
                 sale = Operation.objects.create(type = operationType,
                     location = location,
                     operation_at = fileDate)
@@ -88,7 +88,7 @@ def sales_to_json():
         sales = sales_custom_sql(company.id)
         print len(sales)
         filePath = os.path.join(PROTECTEDFILES_DIR, company.name, '', 'sales.csv')
-        fieldnames = ['price','qty','gestiune','product','category','at','id']
+        fieldnames = ['price','qty','location','product','category','at','id']
         with open(filePath,'wb') as f:
             dw = csv.writer(f, delimiter=',')
             dw.writerow(fieldnames)

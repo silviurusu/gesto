@@ -50,8 +50,8 @@ d3.csv("/json/", function(sales) {
 //        products = product.group(),
        category = sales.dimension(function(d) { return d.category}),
        categories = category.group().reduceSum(function(d) { return d.val; }),
-        gestiune = sales.dimension(function (d){ return d.gestiune;});
-//        gestiuni = gestiune.group(),
+        location = sales.dimension(function (d){ return d.location;});
+//        gestiuni = location.group(),
 //        today = new Date();
 
 
@@ -147,9 +147,9 @@ d3.csv("/json/", function(sales) {
         $('.activeGest').toggleClass('activeGest');
 
         if (tab.className.length == 3 && tab.className != 'all')
-            gestiune.filter(tab.className);
+            location.filter(tab.className);
         else
-            gestiune.filter(null);
+            location.filter(null);
 
         $(tab).toggleClass('activeGest');
         $('.nav .reset').show();
@@ -180,7 +180,7 @@ d3.csv("/json/", function(sales) {
         $('.activeday').toggleClass('activeday');
         $('.nav .reset').hide();
         $('form .btn.reset').hide();
-        gestiune.filter(null);
+        location.filter(null);
         dc.filterAll();
         dc.redrawAll();
     };
