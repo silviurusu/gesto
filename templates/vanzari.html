@@ -15,18 +15,13 @@
                         <li class="all activeGest">
                             <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">All</a>
                         </li>
-                        <li class="700">
-                            <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 1, Piata 700</a>
-                        </li>
-                        <li class="oli">
-                            <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)"">Outlet 2, Olimpia</a>
-                        </li>
-                        <li class="soa">
-                            <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 3, Soarelui</a>
-                        </li>
-                        <li class="vvv">
-                            <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">Outlet 4, Arad</a>
-                        </li>
+
+                        {% for location in locations %}
+                            <li class="{{  location.code }}">
+                                <a href="javascript:void(0)"  onclick="filterGest(this.parentElement)">{{ location.name }}</a>
+                            </li>
+                        {% endfor %}
+
                         <li class="nav-header">
                             Perioada <a  class="reset" href="javascript:void(0)"  onclick="reset()" style="display: inline;">Reset</a>
                         </li>

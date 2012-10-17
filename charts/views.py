@@ -3,12 +3,19 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.files.move import file_move_safe
 from django.http import HttpResponse, HttpResponseForbidden
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from local_settings import CSV_PATH, PROTECTEDFILES_DIR
 from models import *
 import csv
 import os
 saleFieldNames = ['code','name','dep','qty','price']
+
+def sales(request, template):
+
+    company = request.user.profile.company
+    locations = Location.objects.filter(company = company)
+
+    return render(request, 'vanzari.html', {'locations':locations})
 
 def csv_to_sales(request):
     for company in Company.objects.filter(active=1):

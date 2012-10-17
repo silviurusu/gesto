@@ -83,7 +83,7 @@ def csv_to_sales():
 
 @celery.task()
 def sales_to_json():
-    for company in Company.objects.get(active=1):
+    for company in Company.objects.filter(active=True):
         print company.name
         sales = sales_custom_sql(company.id)
         print len(sales)
