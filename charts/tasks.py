@@ -93,8 +93,8 @@ def sales_to_json():
         print len(sales)
         filePath = os.path.join(PROTECTEDFILES_DIR, company.name, '', 'sales.csv')
         fieldnames = ['price','qty','location','product','category','at','id']
-        if not os.path.exists(filePath):
-            os.makedirs(filePath)
+        if not os.path.exists(os.path.split(filePath)[0]):
+            os.makedirs(os.path.split(filePath)[0])
         with open(filePath,'wb') as f:
             dw = csv.writer(f, delimiter=',')
             dw.writerow(fieldnames)
