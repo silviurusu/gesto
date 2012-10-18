@@ -47,36 +47,40 @@ def csv_to_sales():
         for file in files:
             filePath = os.path.join(path, file)
             if os.path.isfile(filePath) and file.endswith("sale"):
+                try:
+                    fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
+                    operationType = OperationType.objects.get(name = 'sale')
+                    location, created = Location.objects.get_or_create(code = file[:3], company = company)
+                    sale = Operation.objects.create(type = operationType,
+                        location = location,
+                        operation_at = fileDate)
 
-                fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
-                operationType = OperationType.objects.get(name = 'sale')
-                location, created = Location.objects.get_or_create(code = file[:3], company = company)
-                sale = Operation.objects.create(type = operationType,
-                    location = location,
-                    operation_at = fileDate)
+                    with open(filePath) as f:
+                    #                dataReader = csv.reader(f, delimiter=',', quotechar='"')
+                        dataReader = csv.DictReader(f, fieldnames=saleFieldNames, delimiter=',', quotechar='"')
+                        for row in dataReader:
 
-                with open(filePath) as f:
-                #                dataReader = csv.reader(f, delimiter=',', quotechar='"')
-                    dataReader = csv.DictReader(f, fieldnames=saleFieldNames, delimiter=',', quotechar='"')
-                    for row in dataReader:
+                            saleItem = OperationItems()
+                            category, created = Category.objects.get_or_create(name = row['dep'], company = company)
+                            product, created = Product.objects.get_or_create( code = row['code'], name = row['name'], category = category )
 
-                        saleItem = OperationItems()
-                        category, created = Category.objects.get_or_create(name = row['dep'], company = company)
-                        product, created = Product.objects.get_or_create( code = row['code'], name = row['name'], category = category )
+                            saleItem.operation = sale
+                            saleItem.product = product
+                            saleItem.qty = row['qty']
+                            saleItem.price = row['price']
 
-                        saleItem.operation = sale
-                        saleItem.product = product
-                        saleItem.qty = row['qty']
-                        saleItem.price = row['price']
+                            saleItem.save()
 
-                        saleItem.save()
-
-                moveToPath = os.path.join(BACKUP_PATH, company.name, file[0:3], file[3:5], file[5:7], file[7:9])
-                if not os.path.exists(moveToPath):
-                    os.makedirs(moveToPath)
-                #TODO:handle existing file
-                file_move_safe(filePath,  moveToPath + '/' + file)
-                count += 1
+                    moveToPath = os.path.join(BACKUP_PATH, company.name, file[0:3], file[3:5], file[5:7], file[7:9])
+                    if not os.path.exists(moveToPath):
+                        os.makedirs(moveToPath)
+                    #TODO:handle existing file
+                    file_move_safe(filePath,  moveToPath + '/' + file)
+                    count += 1
+                except Exception as e:
+                    logger.info('Error type: %s == with arg: %s == Error: %s == filePath: %s ==' % (type(inst), inst.args, inst, filePath ))
+                    moveToPath = os.path.join(BACKUP_PATH, 'errors', company.name, file[0:3], file[3:5], file[5:7])
+                    file_move_safe(filePath, moveToPath  + '/' + file)
         logger.info('Imported %s sales, to %s' % ( count, company.name ))
     return 'import done'
 
@@ -89,6 +93,8 @@ def sales_to_json():
         print len(sales)
         filePath = os.path.join(PROTECTEDFILES_DIR, company.name, '', 'sales.csv')
         fieldnames = ['price','qty','location','product','category','at','id']
+        if not os.path.exists(filePath):
+            os.makedirs(filePath)
         with open(filePath,'wb') as f:
             dw = csv.writer(f, delimiter=',')
             dw.writerow(fieldnames)
