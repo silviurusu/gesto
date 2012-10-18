@@ -4,7 +4,7 @@ from django.core import serializers
 from django.core.files.move import file_move_safe
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, render_to_response
-from local_settings import CSV_PATH, PROTECTEDFILES_DIR
+from local_settings import CSV_PATH, PROTECTEDFILES_DIR, BACKUP_PATH
 from models import *
 import csv
 import os
@@ -18,8 +18,8 @@ def sales(request, template):
     return render(request, 'vanzari.html', {'locations':locations})
 
 def csv_to_sales(request):
-    for company in Company.objects.filter(active=1):
-        path = os.path.join(CSV_PATH, company.name, 'sales')
+    for company in Company.objects.filter(active=True):
+        path = os.path.join(IMPORT_PATH, company.name, 'sales')
         files = os.listdir(path)
         count = 0
         for file in files:
@@ -28,29 +28,28 @@ def csv_to_sales(request):
 
                 fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
                 operationType = OperationType.objects.get(name = 'sale')
-                location, created = Location.objects.get_or_create(name = file[:3], company = company)
+                location, created = Location.objects.get_or_create(code = file[:3], company = company)
                 sale = Operation.objects.create(type = operationType,
                     location = location,
                     operation_at = fileDate)
 
                 with open(filePath) as f:
                 #                dataReader = csv.reader(f, delimiter=',', quotechar='"')
-                    rows = csv.DictReader(f, fieldnames=saleFieldNames, delimiter=',', quotechar='"')
-                    for row in rows:
+                    dataReader = csv.DictReader(f, fieldnames=saleFieldNames, delimiter=',', quotechar='"')
+                    for row in dataReader:
 
-#                        saleItem = OperationItems()
-                        dep, created = Category.objects.get_or_create(name=row['dep'], company=company)
-                        product, created = Product.objects.get_or_create( code=row['code'], name=row['name'], dep=dep )
+                        saleItem = OperationItems()
+                        category, created = Category.objects.get_or_create(name = row['dep'], company = company)
+                        product, created = Product.objects.get_or_create( code = row['code'], name = row['name'], category = category )
 
-                        saleItem = OperationItems.objects.create(qty=row['qty'], price=row['price'], product=product, operation=sale)
-#                        saleItem.operation = sale
-#                        saleItem.product = product
-#                        saleItem.qty = row['qty']
-#                        saleItem.price = row['price']
-#
-#                        saleItem.save()
+                        saleItem.operation = sale
+                        saleItem.product = product
+                        saleItem.qty = row['qty']
+                        saleItem.price = row['price']
 
-                moveToPath = os.path.join(os.path.split(CSV_PATH)[0], file[0:3], file[3:5], file[5:7], file[7:9])
+                        saleItem.save()
+
+                moveToPath = os.path.join(BACKUP_PATH, company.name, file[0:3], file[3:5], file[5:7], file[7:9])
                 if not os.path.exists(moveToPath):
                     os.makedirs(moveToPath)
                     #TODO:handle existing file

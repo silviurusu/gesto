@@ -1,7 +1,7 @@
 from celery.utils.log import get_task_logger
 from django.core.files.move import file_move_safe
 from datetime import datetime, timedelta
-from local_settings import CSV_PATH, PROTECTEDFILES_DIR
+from local_settings import IMPORT_PATH, PROTECTEDFILES_DIR, BACKUP_PATH
 from models import *
 import celery
 import csv
@@ -35,13 +35,13 @@ def sales_custom_sql(company_id):
     return rows
 
 
-#import *.sale files from csv_path
+#import *.sale files from IMPORT_PATH
 #filename : locAALLZZOOMM.sale
 #sale csv format is like saleFieldNames
 @celery.task()
 def csv_to_sales():
-    for company in Company.objects.filter(active=1):
-        path = os.path.join(CSV_PATH, company.name, 'sales')
+    for company in Company.objects.filter(active=True):
+        path = os.path.join(IMPORT_PATH, company.name, 'sales')
         files = os.listdir(path)
         count = 0
         for file in files:
@@ -71,7 +71,7 @@ def csv_to_sales():
 
                         saleItem.save()
 
-                moveToPath = os.path.join(CSV_PATH, company.name, file[0:3], file[3:5], file[5:7], file[7:9])
+                moveToPath = os.path.join(BACKUP_PATH, company.name, file[0:3], file[3:5], file[5:7], file[7:9])
                 if not os.path.exists(moveToPath):
                     os.makedirs(moveToPath)
                 #TODO:handle existing file
