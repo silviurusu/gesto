@@ -77,7 +77,7 @@ def csv_to_sales():
                 #TODO:handle existing file
                 file_move_safe(filePath,  moveToPath + '/' + file)
                 count += 1
-        logger.info('Imported %s sales, to %s' % count, company.name )
+        logger.info('Imported %s sales, to %s' % ( count, company.name ))
     return 'import done'
 
 

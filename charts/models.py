@@ -59,7 +59,7 @@ class OperationItems (models.Model):
     price = models.DecimalField(null=False, max_digits=5, decimal_places=2)
 
 class Location (models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, null=True)
     code = models.CharField(max_length=3)
     company = models.ForeignKey(Company, null=False, related_name ='locations')
 
