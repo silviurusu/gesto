@@ -57,7 +57,16 @@
                                   <li class="{% active request home %}"><a href="/home/">Home</a></li>
                                   <li class="{% active request vanzari %}"><a href="/vanzari/">Sales</a></li>
                                   <li class="{% active request stocuri %}"><a href="/stocuri/">Stocks</a></li>
-                                  <li class="pull-right"><a href="{% url userena_signout %}"><span>{% trans 'Signout' %} {{ user.username }}</span></a></li>
+
+                                  <li class="dropdown">
+                                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }} <b class="caret"></b></a>
+                                      <ul class="dropdown-menu">
+                                          <li><a href="#">Profilul meu</a></li>
+                                          <li><a href="#">{{ user.profile.company.name }}</a></li>
+                                          <li class="divider"></li>
+                                          <li><a href="{% url userena_signout %}">{% trans 'Signout' %}</a></li>
+                                      </ul>
+                                  </li>
                               {% else %}
                                   <li class="pull-right"><a href="{% url userena_signin %}"><span>{% trans 'Signin' %}</span></a></li>
 

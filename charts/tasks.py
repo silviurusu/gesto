@@ -96,6 +96,6 @@ def sales_to_json():
                 dw.writerow(row)
 
         logger.info('Exported '+company.name+' sales')
-        return 'Exported '+company.name+' sales, done!'
+    return 'Exported '+company.name+' sales, done!'
 
 

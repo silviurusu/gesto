@@ -4,7 +4,7 @@ from django.core import serializers
 from django.core.files.move import file_move_safe
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, render_to_response
-from local_settings import CSV_PATH, PROTECTEDFILES_DIR, BACKUP_PATH
+from local_settings import PROTECTEDFILES_DIR, BACKUP_PATH
 from models import *
 import csv
 import os
