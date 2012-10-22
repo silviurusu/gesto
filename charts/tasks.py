@@ -1,4 +1,5 @@
 from celery.utils.log import get_task_logger
+from django.core.exceptions import MultipleObjectsReturned
 from django.core.files.move import file_move_safe
 from datetime import datetime, timedelta
 from local_settings import IMPORT_PATH, PROTECTEDFILES_DIR, BACKUP_PATH
@@ -62,7 +63,17 @@ def csv_to_sales():
 
                             saleItem = OperationItems()
                             category, created = Category.objects.get_or_create(name = row['dep'], company = company)
-                            product, created = Product.objects.get_or_create( code = row['code'], name = row['name'], category = category )
+                            try:
+                                product, created = Product.objects.get_or_create( code = row['code'], name = row['name'], category = category )
+                            except MultipleObjectsReturned:
+                                #get duplicates, remove reference from OperationItems and delete them
+                                productIds = Product.objects.filter(code = row['code'], name = row['name'], category = category ).values_list('id', flat=True).order_by('id')
+                                logger.info('======removing product ids: %s ...' % str(productIds))
+                                for id in productIds[1:]:
+                                    for o in OperationItems.objects.filter(product_id = id):
+                                        o.product_id = productIds[0]
+                                        o.save()
+                                    Product.objects.get(id = id).delete()
 
                             saleItem.operation = sale
                             saleItem.product = product
@@ -78,8 +89,10 @@ def csv_to_sales():
                     file_move_safe(filePath,  moveToPath + '/' + file)
                     count += 1
                 except Exception as e:
-                    logger.info('Error type: %s == with arg: %s == Error: %s == filePath: %s ==' % (type(inst), inst.args, inst, filePath ))
+                    logger.info('Error type: %s == with arg: %s == Error: %s == filePath: %s ==' % (type(e), e.args, e, filePath ))
                     moveToPath = os.path.join(BACKUP_PATH, 'errors', company.name, file[0:3], file[3:5], file[5:7])
+                    if not os.path.exists(moveToPath):
+                        os.makedirs(moveToPath)
                     file_move_safe(filePath, moveToPath  + '/' + file)
         logger.info('Imported %s sales, to %s' % ( count, company.name ))
     return 'import done'
