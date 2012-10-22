@@ -1,8 +1,8 @@
 from django.conf.urls.defaults import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.views.generic.simple import direct_to_template
@@ -16,7 +16,8 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
+    (r'^grappelli/', include('grappelli.urls')),
     (r'^$', lambda r : HttpResponseRedirect('home/')),
     (r'^home/$', direct_to_template, { 'template': 'dashboard.html' }, 'homeurl'),
     (r'^vanzari/$', 'charts.views.sales', { 'template': 'vanzari.html' }, "vanzariurl"),

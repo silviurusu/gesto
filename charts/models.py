@@ -5,7 +5,6 @@ from userena.models import *
 
 
 class UserProfile(UserenaBaseProfile):
-
     user = models.OneToOneField(User,
         unique=True,
         verbose_name='user',
@@ -20,15 +19,15 @@ class Company(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
 
+    def __unicode__(self):
+        return u"%s" % self.name
 
 
 class Category (models.Model):
-
     name = models.CharField(max_length=50)
     company = models.ForeignKey(Company, null=False, related_name ='categories')
 
 class Product (models.Model):
-
     code = models.CharField(max_length = 10)
     name = models.CharField(max_length = 50)
     category = models.ForeignKey(Category, default=1)
@@ -37,20 +36,19 @@ class Product (models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
 
+    def __unicode__(self):
+        return u"%s" % self.name
+
 class OperationType(models.Model):
     name = models.CharField(max_length=50)
 
 
 class Operation (models.Model):
-
     type = models.ForeignKey(OperationType)
     location = models.ForeignKey('Location', null=False, related_name='operations')
     operation_at = models.DateTimeField()
-
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
-
-
 
 class OperationItems (models.Model):
     operation = models.ForeignKey(Operation,  null=False, related_name = 'items')
@@ -63,8 +61,10 @@ class Location (models.Model):
     code = models.CharField(max_length=3)
     company = models.ForeignKey(Company, null=False, related_name ='locations')
 
-class Stock(models.Model):
+    def __unicode__(self):
+        return u"%s" % self.name
 
+class Stock(models.Model):
     location = models.ForeignKey(Location)
     product = models.ForeignKey(Product)
     qty = models.DecimalField(null=False, max_digits=5, decimal_places=2)
