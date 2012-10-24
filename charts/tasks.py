@@ -47,6 +47,18 @@ def csv_to_sales():
         count = 0
         for file in files:
             filePath = os.path.join(path, file)
+
+            backupFolder = os.path.join(BACKUP_PATH, company.name, file[0:3], file[3:5], file[5:7], file[7:9])
+            if not os.path.exists(backupFolder):
+                os.makedirs(backupFolder)
+            duplicateFolder = os.path.join(BACKUP_PATH, 'duplicates', company.name, file[0:3], file[3:5], file[5:7], file[7:9])
+            if not os.path.exists(duplicateFolder):
+                os.makedirs(duplicateFolder)
+
+            if os.path.exists(os.path.join(backupFolder, file)):
+                file_move_safe(filePath,  duplicateFolder + '/' + file)
+                break
+
             if os.path.isfile(filePath) and file.endswith("sale"):
                 try:
                     fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
@@ -82,11 +94,8 @@ def csv_to_sales():
 
                             saleItem.save()
 
-                    moveToPath = os.path.join(BACKUP_PATH, company.name, file[0:3], file[3:5], file[5:7], file[7:9])
-                    if not os.path.exists(moveToPath):
-                        os.makedirs(moveToPath)
                     #TODO:handle existing file
-                    file_move_safe(filePath,  moveToPath + '/' + file)
+                    file_move_safe(filePath,  backupFolder + '/' + file)
                     count += 1
                 except Exception as e:
                     logger.info('Error type: %s == with arg: %s == Error: %s == filePath: %s ==' % (type(e), e.args, e, filePath ))
