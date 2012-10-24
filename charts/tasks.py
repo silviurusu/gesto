@@ -42,16 +42,16 @@ def sales_custom_sql(company_id):
 @celery.task()
 def csv_to_sales():
     for company in Company.objects.filter(active=True):
-        path = os.path.join(IMPORT_PATH, company.name, 'sales')
+        path = os.path.join(IMPORT_PATH, company.name.lower(), 'sales')
         files = os.listdir(path)
         count = 0
         for file in files:
             filePath = os.path.join(path, file)
 
-            backupFolder = os.path.join(BACKUP_PATH, company.name, file[0:3], file[3:5], file[5:7], file[7:9])
+            backupFolder = os.path.join(BACKUP_PATH, company.name.lower(), file[0:3], file[3:5], file[5:7], file[7:9])
             if not os.path.exists(backupFolder):
                 os.makedirs(backupFolder)
-            duplicateFolder = os.path.join(BACKUP_PATH, 'duplicates', company.name, file[0:3], file[3:5], file[5:7], file[7:9])
+            duplicateFolder = os.path.join(BACKUP_PATH, 'duplicates', company.name.lower(), file[0:3], file[3:5], file[5:7], file[7:9])
             if not os.path.exists(duplicateFolder):
                 os.makedirs(duplicateFolder)
 
@@ -99,7 +99,7 @@ def csv_to_sales():
                     count += 1
                 except Exception as e:
                     logger.info('Error type: %s == with arg: %s == Error: %s == filePath: %s ==' % (type(e), e.args, e, filePath ))
-                    moveToPath = os.path.join(BACKUP_PATH, 'errors', company.name, file[0:3], file[3:5], file[5:7])
+                    moveToPath = os.path.join(BACKUP_PATH, 'errors', company.name.lower(), file[0:3], file[3:5], file[5:7])
                     if not os.path.exists(moveToPath):
                         os.makedirs(moveToPath)
                     file_move_safe(filePath, moveToPath  + '/' + file)
@@ -113,7 +113,7 @@ def sales_to_json():
         print company.name
         sales = sales_custom_sql(company.id)
         print len(sales)
-        filePath = os.path.join(PROTECTEDFILES_DIR, company.name, '', 'sales.csv')
+        filePath = os.path.join(PROTECTEDFILES_DIR, company.name.lower(), '', 'sales.csv')
         fieldnames = ['price','qty','location','product','category','at','id']
         if not os.path.exists(os.path.split(filePath)[0]):
             os.makedirs(os.path.split(filePath)[0])
