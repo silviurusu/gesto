@@ -98,7 +98,7 @@ def nginx_accel(request):
 
     if request.user.profile.company.active:
         response = HttpResponse()
-        url = '/protected/'+request.user.profile.company.name+'/sales.csv' # this will obviously be different for every ressource
+        url = '/protected/'+request.user.profile.company.name.lower()+'/sales.csv' # this will obviously be different for every ressource
         # let nginx determine the correct content type
         response['Content-Type']="application/json"
         response['Content-Disposition']="attachment; filename='sales.csv'"

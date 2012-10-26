@@ -57,9 +57,7 @@ def csv_to_sales():
 
             if os.path.exists(os.path.join(backupFolder, file)):
                 file_move_safe(filePath,  duplicateFolder + '/' + file)
-                break
-
-            if os.path.isfile(filePath) and file.endswith("sale"):
+            elif os.path.isfile(filePath) and file.endswith("sale"):
                 try:
                     fileDate = datetime.datetime.strptime( file[3:13], '%y%m%d%H%M')
                     operationType = OperationType.objects.get(name = 'sale')
