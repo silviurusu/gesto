@@ -164,7 +164,8 @@ class AutoVivification(dict):
 def str_or_zero(dict, field):
     return '{0:.0f}'.format(dict[field]) if field in dict else 0
 
-def dashsales_to_json(request):
+@celery.task()
+def dashsales_to_json():
 
     for company in Company.objects.filter(active=True):
         filePath = os.path.join(PROTECTEDFILES_DIR, company.name.lower(), 'homesales.csv')
