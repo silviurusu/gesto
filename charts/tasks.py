@@ -168,7 +168,7 @@ def str_or_zero(dict, field):
 def dashsales_to_json():
 
     for company in Company.objects.filter(active=True):
-        filePath = os.path.join(PROTECTEDFILES_DIR, company.name.lower(), 'homesales.csv')
+        filePath = os.path.join(PROTECTEDFILES_DIR, company.name.lower(), '', 'homesales.csv')
         if not os.path.exists(os.path.split(filePath)[0]):
             os.makedirs(os.path.split(filePath)[0])
 
