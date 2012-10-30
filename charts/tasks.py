@@ -132,7 +132,7 @@ def dashsales_custom_sql(company_id):
 
     today = datetime.datetime.now()
     int1 = today - timedelta(days=90)
-    int2 = today + timedelta(days=1)
+    int2 = today
     s1 = datetime.datetime.strftime(int1.replace(hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
     s2 = datetime.datetime.strftime(int2.replace(hour=0, minute=0, second=0),"%Y-%m-%d %M:%H:%S")
 

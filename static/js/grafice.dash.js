@@ -35,7 +35,12 @@ var svg = d3.select("#vanzari").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 d3.csv("/dashsales/", function(data) {
-    color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
+    keys = d3.keys(data[0]).filter(function(key) { return key !== "date"; });
+    color.domain(keys);
+
+    var locationNames = d3.scale.ordinal()
+        .domain(keys)
+        .rangePoints([width - 30*keys.length,width],1);
 
     data.forEach(function(d) {
         d.date = parseDate(d.date);
@@ -82,11 +87,13 @@ d3.csv("/dashsales/", function(data) {
         .attr("d", function(d) { return line(d.values); })
         .style("stroke", function(d) { return color(d.name); });
 
-    location.append("text")
-        .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-        .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.sales) + ")"; })
-        .attr("x", 3)
+    var legend_labels = location.append("g")
+        .attr("class", "legend-label");
+
+    legend_labels.append("text")
+        .attr("x", function(d){return locationNames(d.name)})
         .attr("dy", ".35em")
+        .style("stroke", function(d) { return color(d.name); })
         .text(function(d) { return d.name; });
 
     var focus_labels = location.append("g")
@@ -103,10 +110,10 @@ d3.csv("/dashsales/", function(data) {
         .attr("dy", ".35em")
         .style("stroke", function(d) { return color(d.name); });
 
-    var focusline = svg.append("g")
-        .attr("class","focusline")
+    var focus_line = svg.append("g")
+        .attr("class","focus-line")
         .style("display", "none");
-    focusline.append("line")
+    focus_line.append("line")
         .attr("x1", 0).attr("x2", 0)
         .attr("y1", 0).attr("y2", 240);
 
@@ -114,8 +121,8 @@ d3.csv("/dashsales/", function(data) {
         .attr("class", "overlay")
         .attr("width", width)
         .attr("height", height)
-        .on("mouseover", function() { focus_labels.style("display", null); focusline.style("display", null);})
-        .on("mouseout", function() { focus_labels.style("display", "none"); focusline.style("display", "none");})
+        .on("mouseover", function() { focus_labels.style("display", null); focus_line.style("display", null);})
+        .on("mouseout", function() { focus_labels.style("display", "none"); focus_line.style("display", "none");})
         .on("mousemove", mousemove);
 
     function mousemove() {
@@ -125,7 +132,7 @@ d3.csv("/dashsales/", function(data) {
             d1 = data[i],
             d = x0 - d0.date > d1.date - x0 ? d1 : d0,
             i = x0 - d0.date > d1.date - x0 ? i : i-1;
-        focusline.attr("transform", "translate(" + x(d.date) + ")");
+        focus_line.attr("transform", "translate(" + x(d.date) + ")");
         focus_labels.attr("transform", function(d) {
             return "translate(" + x(d.values[i].date) + "," + y(d.values[i].sales) + ")"
         });
