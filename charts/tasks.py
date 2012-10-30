@@ -188,4 +188,4 @@ def dashsales_to_json():
             for k, v in pivot.items():
                 dw.writerow([k] + [str_or_zero(v,field) for field in fieldnames[1:]])
 
-    return 'Exported '+company.name+' dashsales, done!'
+    return 'Exported dashsales, done!'
