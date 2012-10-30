@@ -38,9 +38,13 @@ d3.csv("/dashsales/", function(data) {
     keys = d3.keys(data[0]).filter(function(key) { return key !== "date"; });
     color.domain(keys);
 
-    var locationNames = d3.scale.ordinal()
+    var locationLegendPosition = d3.scale.ordinal()
         .domain(keys)
         .rangePoints([width - 30*keys.length,width],1);
+
+    var locationLabelPosition = d3.scale.ordinal()
+        .domain(keys)
+        .range([-39, 9]);
 
     data.forEach(function(d) {
         d.date = parseDate(d.date);
@@ -91,7 +95,7 @@ d3.csv("/dashsales/", function(data) {
         .attr("class", "legend-label");
 
     legend_labels.append("text")
-        .attr("x", function(d){return locationNames(d.name)})
+        .attr("x", function(d){return locationLegendPosition(d.name)})
         .attr("dy", ".35em")
         .style("stroke", function(d) { return color(d.name); })
         .text(function(d) { return d.name; });
@@ -106,12 +110,12 @@ d3.csv("/dashsales/", function(data) {
         .style("stroke", function(d) { return color(d.name); });
 
     focus_labels.append("text")
-        .attr("x", 9)
+        .attr("x", function(d) {return locationLabelPosition(d.name)})
         .attr("dy", ".35em")
         .style("stroke", function(d) { return color(d.name); });
 
     var focus_line = svg.append("g")
-        .attr("class","focus-line")
+        .attr("class","focusline")
         .style("display", "none");
     focus_line.append("line")
         .attr("x1", 0).attr("x2", 0)
