@@ -7,6 +7,21 @@ from models import *
 saleFieldNames = ['code','name','dep','qty','price']
 
 @login_required
+def home(request, template):
+
+    count = 0
+    start_date = datetime.datetime.now().replace(hour=0, minute=0, second=0)
+    end_date = datetime.datetime.now().replace(hour=23, minute=59, second=59)
+
+    locations = Location.objects.filter(company = request.user.profile.company)
+    for location in locations:
+        if location.operations.filter(operation_at__range=(start_date, end_date)).count() > 0:
+            count += 1
+
+    return render(request, 'home.html', {'count':count})
+
+
+@login_required
 def sales(request, template):
 
     company = request.user.profile.company

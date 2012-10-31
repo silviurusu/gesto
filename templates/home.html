@@ -5,8 +5,8 @@
         <div class="hero-unit">
             <h1> Salut, {{ user.username }}!</h1>
             <p>In acest moment
-                {% if user.profile.company.locations.count > 1  %}sunt active {{ user.profile.company.locations.count }} locatii {{ user.profile.company.name }}.
-                {% elif  user.profile.company.locations.count = 1%}este activa o locatie {{ user.profile.company.name }}.
+                {% if count > 1 %}sunt active {{ count }} locatii din {{ user.profile.company.locations.count }}.
+                {% elif count = 1 %}este activa o locatie din {{ user.profile.company.locations.count }}.
                 {% endif %}</p>
 
         </div>
