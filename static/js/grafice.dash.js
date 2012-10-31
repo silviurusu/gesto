@@ -89,7 +89,7 @@ d3.csv("/dashsales/", function(data) {
     location.append("path")
         .attr("class", "line")
         .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { return color(d.name); });
+        .style("stroke", function(d) { return d3.rgb(color(d.name)).brighter(0.2); });
 
     var legend_labels = location.append("g")
         .attr("class", "legend-label");
@@ -97,7 +97,7 @@ d3.csv("/dashsales/", function(data) {
     legend_labels.append("text")
         .attr("x", function(d){return locationLegendPosition(d.name)})
         .attr("dy", ".35em")
-        .style("stroke", function(d) { return color(d.name); })
+        .style("stroke", function(d) { return d3.rgb(color(d.name)).brighter(0.2); })
         .text(function(d) { return d.name; });
 
     var focus_labels = location.append("g")
@@ -106,13 +106,13 @@ d3.csv("/dashsales/", function(data) {
 
     focus_labels.append("circle")
         .datum(function(d) { return {name: d.name, values: d.values}; })
-        .attr("r", 3.5)
+        .attr("r", 2.5)
         .style("stroke", function(d) { return color(d.name); });
 
     focus_labels.append("text")
         .attr("x", function(d) {return locationLabelPosition(d.name)})
         .attr("dy", ".35em")
-        .style("stroke", function(d) { return color(d.name); });
+        .style("stroke", function(d) { return d3.rgb(color(d.name)).darker(0.8); });
 
     var focus_line = svg.append("g")
         .attr("class","focusline")

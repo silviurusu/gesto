@@ -6,6 +6,7 @@ from models import *
 
 saleFieldNames = ['code','name','dep','qty','price']
 
+@login_required
 def sales(request, template):
 
     company = request.user.profile.company
