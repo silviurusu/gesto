@@ -26,16 +26,16 @@
                             Perioada <a  class="reset" href="javascript:void(0)"  onclick="reset()" style="display: inline;">Reset</a>
                         </li>
                         <li class="today">
-                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Today</a>
+                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement, {{ user.username }})">Today</a>
                         </li>
                         <li class="yesterday">
-                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Yesterday</a>
+                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement, {{ user.username }})">Yesterday</a>
                         </li>
                         <li class="activeday currentweek">
-                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Curent week</a>
+                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement, {{ user.username }})">Curent week</a>
                         </li>
                         <li class="lastweek">
-                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement)">Last week</a>
+                            <a href="javascript:void(0)"  onclick="filterTime(this.parentElement, {{ user.username }})">Last week</a>
                         </li>
                         <li class="nav-header">
                             Product
@@ -102,9 +102,6 @@
         </div>
     </div>
 
-
-
-    <script type="text/javascript">mixpanel.track_pageview("/vanzari");</script>
 
     <script type="text/javascript" src="{{ STATIC_URL }}js/grafice.vanzari.js"></script>
 

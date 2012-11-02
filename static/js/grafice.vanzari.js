@@ -118,8 +118,10 @@ d3.csv("/json/", function(sales) {
         .group(all);
     dc.renderAll();
 
-    window.filterTime = function(tab){
+    window.filterTime = function(tab, user){
         $('.activeday').toggleClass('activeday');
+
+        mixpanel.track("Time filter", {"user": user, "time frame": tab.className}, function() { console.log('track call succeeded') });
 
         switch(tab.className)
         {
