@@ -145,7 +145,7 @@ def dashsales_custom_sql(company_id):
                         AND charts_location.id = location_id \
                         AND charts_location.company_id = "'+str(company_id)+'"\
                         AND charts_product.category_id = charts_category.id \
-                    GROUP BY day(at), location \
+                    GROUP BY year(at), month(at), day(at), location \
                     ORDER BY at')
     rows = cursor.fetchall()
 
