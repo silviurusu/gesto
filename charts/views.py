@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
+from django.db.models.aggregates import Sum
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, render_to_response
 from models import *
@@ -18,7 +19,10 @@ def home(request, template):
         if location.operations.filter(operation_at__range=(start_date, end_date)).count() > 0:
             count += 1
 
-    return render(request, 'home.html', {'count':count})
+    num_products = Operation.objects.filter(location_id__in = locations, operation_at__gte=start_date).aggregate(num_prods = Sum('items__qty'))
+
+
+    return render(request, 'home.html', {'count':count, 'num_products': num_products['num_prods']})
 
 
 @login_required
