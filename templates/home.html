@@ -18,9 +18,9 @@
 
                     <ul class="nav nav-list">
                         <li class="divider"></li>
-                        <li><span>Azi s-au vandut {{ num_products }} produse</span></li>
+                        <li><span>Azi s-au vandut {{ num_products|stringformat:"0.f" }} produse</span></li>
                         <li class="divider"></li>
-                        <li><span>catre xxx clienti</span></li>
+                        <li><span>catre {{ num_customers }} clienti</span></li>
                         <li class="divider"></li>
                         <li><span>in valoare de xxx</span></li>
                         <li class="divider"></li>

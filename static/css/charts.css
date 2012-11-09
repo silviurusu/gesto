@@ -40,6 +40,10 @@ h1, h2 {
   text-rendering: optimizeLegibility;
 }
 
+#data-count h2 {
+    line-height: 10px;
+}
+
 #charts {
   padding: 10px 0;
 }
