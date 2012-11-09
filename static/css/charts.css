@@ -40,6 +40,11 @@ h1, h2 {
   text-rendering: optimizeLegibility;
 }
 
+.progress.active .bar{
+    -webkit-animation-duration: 2s !important;
+    -webkit-transition-duration: 2.5s;
+}
+
 #data-count h2 {
     line-height: 10px;
 }

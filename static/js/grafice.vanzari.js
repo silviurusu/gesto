@@ -1,7 +1,8 @@
+$('.bar').css('width', '80%').text('loading...');
 
 
 d3.csv("/json/", function(sales) {
-
+    $('.bar').css('width', '95%').text('render graphs...');
     // Various formatters.
     var formatNumber = d3.format("d"),
         formatFloat = d3.format("f"),
@@ -55,7 +56,7 @@ d3.csv("/json/", function(sales) {
 //        today = new Date();
 
 
-   window.pieChartDOW = dc.pieChart("#pie-chart-dow")
+    window.pieChartDOW = dc.pieChart("#pie-chart-dow")
        .width(180)
        .height(180)
        .radius(90)
@@ -67,7 +68,7 @@ d3.csv("/json/", function(sales) {
        })
        .renderTitle(true);
 
-   window.pieChartCategory = dc.pieChart("#pie-chart-category")
+    window.pieChartCategory = dc.pieChart("#pie-chart-category")
        .width(180)
        .height(180)
        .radius(90)
@@ -117,6 +118,8 @@ d3.csv("/json/", function(sales) {
         .dimension(sales)
         .group(all);
     dc.renderAll();
+
+    $('.bar').css('width', '100%').text("done");
 
     window.filterTime = function(tab, user){
         $('.activeday').toggleClass('activeday');

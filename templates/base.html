@@ -57,8 +57,8 @@
                           <ul class="nav">
                               {% if user.is_authenticated %}
                                   <li class="{% active request home %}"><a href="/home/">Home</a></li>
-                                  <li class="{% active request vanzari %}"><a href="/vanzari/">Sales</a></li>
-                                  <li class="{% active request stocuri %}"><a href="/stocuri/">Stocks</a></li>
+                                  <li class="{% active request vanzari %}"><a href="/vanzari/">Vanzari <small class="muted">beta</small></a></li>
+                                  <li class="{% active request stocuri %}"><a href="/stocuri/">Stocuri <small class="muted">dev</small></a></li>
                           </ul>
                           <ul class="nav pull-right">
                                   <li class="dropdown">
