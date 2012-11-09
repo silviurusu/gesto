@@ -1,8 +1,9 @@
-$('.bar').css('width', '80%').text('loading...');
+$('body').css('cursor','wait');
+$('.containerpb').slideDown();
+$('.bar').css('width', '100%').text('loading...');
 
 
 d3.csv("/json/", function(sales) {
-    $('.bar').css('width', '95%').text('render graphs...');
     // Various formatters.
     var formatNumber = d3.format("d"),
         formatFloat = d3.format("f"),
@@ -119,8 +120,6 @@ d3.csv("/json/", function(sales) {
         .group(all);
     dc.renderAll();
 
-    $('.bar').css('width', '100%').text("done");
-
     window.filterTime = function(tab, user){
         $('.activeday').toggleClass('activeday');
 
@@ -195,7 +194,9 @@ d3.csv("/json/", function(sales) {
         product.filterAll();
         dc.redrawAll();
     };
-
+    $('.containerpb').slideUp();
+    $('body').css('cursor','default');
+//    $('.containerpb').hide();
 });
 
 
