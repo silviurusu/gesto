@@ -87,6 +87,7 @@ d3.csv("/json/", function(sales) {
         .dimension(hour)
         .group(hours)
         .elasticY(true)
+        .elasticX(true)
         .x(d3.scale.linear()
         .domain([6,22])
         .rangeRound([0, 10 * 24]));
@@ -123,7 +124,7 @@ d3.csv("/json/", function(sales) {
     window.filterTime = function(tab){
         $('.activeday').toggleClass('activeday');
 
-        mixpanel.track("Filter", {"type":"time", "source": ":menu", "filter": tab.className});
+        mixpanel.track("Filter", {"type":"time", "source": "menu", "filter": tab.className});
 
         switch(tab.className)
         {
