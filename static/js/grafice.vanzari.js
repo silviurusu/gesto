@@ -1,6 +1,6 @@
 $('body').css('cursor','wait');
 $('.containerpb').slideDown();
-$('.bar').css('width', '100%').text('loading...');
+$('.bar').css('width', '80%').text('loading...');
 
 
 d3.csv("/json/", function(sales) {
@@ -120,10 +120,10 @@ d3.csv("/json/", function(sales) {
         .group(all);
     dc.renderAll();
 
-    window.filterTime = function(tab, user){
+    window.filterTime = function(tab){
         $('.activeday').toggleClass('activeday');
 
-        mixpanel.track("Time filter", {"user": user, "time frame": tab.className}, function() { console.log('track call succeeded') });
+        mixpanel.track("Filter", {"type":"time", "source": ":menu", "filter": tab.className});
 
         switch(tab.className)
         {
@@ -150,6 +150,8 @@ d3.csv("/json/", function(sales) {
     window.filterGest = function(tab){
         $('.activeGest').toggleClass('activeGest');
 
+        mixpanel.track("Filter", {"type":"location", "source":"menu" , "filter": tab.className});
+
         if (tab.className.length == 3 && tab.className != 'all')
             location.filter(tab.className);
         else
@@ -161,8 +163,11 @@ d3.csv("/json/", function(sales) {
     }
 
     window.filterProduct = function(tab){
-        if (tab !='' )
+        if (tab !='' ){
+            mixpanel.track("Filter", {"type":"product", "source":"menu" , "filter": tab});
             product.filter(tab);
+        }
+
         else
             product.filter(null);
 

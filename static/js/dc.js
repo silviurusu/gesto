@@ -1625,6 +1625,7 @@ dc.pieChart = function(parent, chartGroup) {
             });
         } else {
             dc.events.trigger(function() {
+                mixpanel.track("Filter", {"type":"pie chart", "source": _chart.svg(function() {}).anchor(), "filter": toFilter});
                 _chart.filter(toFilter);
                 dc.redrawAll(_chart.chartGroup());
             });

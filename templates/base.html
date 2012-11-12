@@ -56,6 +56,7 @@
                       <div class="nav-collapse">
                           <ul class="nav">
                               {% if user.is_authenticated %}
+                                  <script>mixpanel.name_tag('{{ user.username }}');</script>
                                   <li class="{% active request home %}"><a href="/home/">Home</a></li>
                                   <li class="{% active request vanzari %}"><a href="/vanzari/">Vanzari <small class="muted">beta</small></a></li>
                                   <li class="{% active request stocuri %}"><a href="/stocuri/">Stocuri <small class="muted">dev</small></a></li>
