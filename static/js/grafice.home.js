@@ -11,13 +11,16 @@ var x = d3.time.scale()
     .range([0, width]);
 
 var y = d3.scale.linear()
-    .range([height, 0]);
+    .range([height, 0])
+    .clamp(true);
 
 var color = d3.scale.category10();
 
 var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("bottom");
+    .orient("bottom")
+    .ticks(d3.time.days, 2)
+    .tickFormat(d3.time.format("%d"));
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -34,13 +37,13 @@ var svg = d3.select("#vanzari").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("/dashsales/", function(data) {
+d3.csv("/homesales/", function(data) {
     keys = d3.keys(data[0]).filter(function(key) { return key !== "date"; });
     color.domain(keys);
 
     var locationLegendPosition = d3.scale.ordinal()
         .domain(keys)
-        .rangePoints([width - 30*keys.length,width],1);
+        .rangePoints([0,30*keys.length],1);
 
     var locationLabelPosition = d3.scale.ordinal()
         .domain(keys)
@@ -61,9 +64,10 @@ d3.csv("/dashsales/", function(data) {
 
     x.domain(d3.extent(data, function(d) { return d.date; }));
 
+    var min = d3.min(locations, function(c) { return d3.min(c.values, function(v) { return v.sales; }); }),
+        max = d3.max(locations, function(c) { return d3.max(c.values, function(v) { return v.sales; }); });
     y.domain([
-        d3.min(locations, function(c) { return d3.min(c.values, function(v) { return v.sales; }); }),
-        d3.max(locations, function(c) { return d3.max(c.values, function(v) { return v.sales; }); })
+        min+1000, max-4000, max
     ]);
 
     svg.append("g")
