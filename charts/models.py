@@ -28,7 +28,7 @@ class Category (models.Model):
     company = models.ForeignKey(Company, null=False, related_name ='categories')
 
 class Product (models.Model):
-    code = models.CharField(max_length = 10)
+    code = models.CharField(max_length = 13)
     name = models.CharField(max_length = 50)
     category = models.ForeignKey(Category, default=1)
     qty = models.DecimalField(max_digits=5, decimal_places=2, default=0)
