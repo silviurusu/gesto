@@ -11,8 +11,7 @@ var x = d3.time.scale()
     .range([0, width]);
 
 var y = d3.scale.linear()
-    .range([height, 0])
-    .clamp(true);
+    .range([height, 0]);
 
 var color = d3.scale.category10();
 
@@ -20,7 +19,7 @@ var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
     .ticks(d3.time.days, 2)
-    .tickFormat(d3.time.format("%d"));
+    .tickFormat(d3.time.format("%e/%m"));
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -66,9 +65,7 @@ d3.csv("/homesales/", function(data) {
 
     var min = d3.min(locations, function(c) { return d3.min(c.values, function(v) { return v.sales; }); }),
         max = d3.max(locations, function(c) { return d3.max(c.values, function(v) { return v.sales; }); });
-    y.domain([
-        min+1000, max-4000, max
-    ]);
+    y.domain([min, max]);
 
     svg.append("g")
         .attr("class", "x axis")
