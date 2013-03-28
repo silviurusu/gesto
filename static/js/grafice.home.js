@@ -18,7 +18,6 @@ var color = d3.scale.category10();
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .ticks(d3.time.days, 2)
     .tickFormat(d3.time.format("%e/%m"));
 
 var yAxis = d3.svg.axis()
