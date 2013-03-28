@@ -63,11 +63,15 @@ def nginx_accel_homesales(request):
 
 def productList(request):
 
-    query = request.GET.get('query')
-#    check for empty query
-#    not case sensitive cases
-#    sanitize?
-    products = Product.objects.filter(name__istartswith=query)
-    products = serializers.serialize('json', products, fields=('name'))
+    if request.user.profile.company.active:
+        query = request.GET.get('query')
+    #    check for empty query
+    #    not case sensitive cases
+    #    sanitize?
 
-    return HttpResponse(products, mimetype="application/json")
+        products = Product.objects.filter(category__company = request.user.profile.company).filter(name__istartswith=query)
+        products = serializers.serialize('json', products, fields=('name'))
+
+        return HttpResponse(products, mimetype="application/json")
+
+    return HttpResponseForbidden()

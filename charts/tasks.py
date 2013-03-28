@@ -102,7 +102,7 @@ def csv_to_sales():
                     if not os.path.exists(moveToPath):
                         os.makedirs(moveToPath)
                     file_move_safe(filePath, moveToPath  + '/' + file)
-        logger.info('Imported %s sales, to %s' % ( count, company.name ))
+        logger.info('Imported %s sales, to %s from %s ' % ( count, company.name, path ))
     return 'import done'
 
 
