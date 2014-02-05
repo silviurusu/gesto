@@ -10,6 +10,7 @@ import csv
 import os
 
 saleFieldNames = ['code','name','dep','qty','price']
+saleFieldNamesFtp = ['code','name','dep','qty','price', 'saleno']
 
 logger = get_task_logger(__name__)
 
@@ -104,6 +105,81 @@ def csv_to_sales():
                     file_move_safe(filePath, moveToPath  + '/' + file)
         logger.info('Imported %s sales, to %s from %s ' % ( count, company.name, path ))
     return 'import done'
+
+@celery.task()
+def ftpcsv_to_sales():
+    for company in Company.objects.filter(active=True):
+        path = os.path.join(FTP_IMPORT_PATH, company.name.lower())
+        files = os.listdir(path)
+        count = 0
+        for file in files:
+            filePath = os.path.join(path, file)
+
+            backupFolder = os.path.join(BACKUP_PATH, company.name.lower(), file[0:3], file[3:5], file[5:7], file[7:9])
+            if not os.path.exists(backupFolder):
+                os.makedirs(backupFolder)
+            duplicateFolder = os.path.join(BACKUP_PATH, 'duplicates', company.name.lower(), file[0:3], file[3:5], file[5:7], file[7:9])
+            if not os.path.exists(duplicateFolder):
+                os.makedirs(duplicateFolder)
+
+            if os.path.exists(os.path.join(backupFolder, file)):
+                file_move_safe(filePath,  duplicateFolder + '/' + file)
+            elif os.path.isfile(filePath) and file.endswith("sale"):
+                try:
+                    
+                    operationType = OperationType.objects.get(name = 'sale')
+                    location, created = Location.objects.get_or_create(code = file[:3], company = company)
+					
+					sales = {}
+
+					with open(filePath) as f:
+					    dataReader = csv.DictReader(f, fieldnames=saleFieldNamesFtp, delimiter=',', quotechar='"')
+					    for row in dataReader:
+							saleno = row['saleno']
+							row.pop('saleno')
+							if not sales.has_key(saleno) :
+								sales[saleno] = []
+							sales[saleno].append(row)
+
+					for saleno, sale in sales:
+						saleDate = datetime.datetime.strptime( saleno[3:13], '%y%m%d%H%M')
+	                    saleOp = Operation.objects.create(type = operationType,
+	                        location = location,
+	                        operation_at = saleDate)						
+						for item in sale:
+
+					        saleItem = OperationItems()
+                            category, created = Category.objects.get_or_create(name = item['dep'], company = company)
+                            try:
+                                product, created = Product.objects.get_or_create( code = item['code'], name = item['name'], category = category )
+                            except MultipleObjectsReturned:
+                                #get duplicates, remove reference from OperationItems and delete them
+                                productIds = Product.objects.filter(code = item['code'], name = item['name'], category = category ).values_list('id', flat=True).order_by('id')
+                                logger.info('======removing product ids: %s ...' % str(productIds))
+                                for id in productIds[1:]:
+                                    for o in OperationItems.objects.filter(product_id = id):
+                                        o.product_id = productIds[0]
+                                        o.save()
+                                    Product.objects.get(id = id).delete()
+
+                            saleItem.operation = saleOp
+                            saleItem.product = product
+                            saleItem.qty = item['qty']
+                            saleItem.price = item['price']
+
+                            saleItem.save()	
+
+                    #TODO:handle existing file
+                    file_move_safe(filePath,  backupFolder + '/' + file)
+                    count += 1
+                except Exception as e:
+                    logger.info('Error type: %s == with arg: %s == Error: %s == filePath: %s ==' % (type(e), e.args, e, filePath ))
+                    moveToPath = os.path.join(BACKUP_PATH, 'errors', company.name.lower(), file[0:3], file[3:5], file[5:7])
+                    if not os.path.exists(moveToPath):
+                        os.makedirs(moveToPath)
+                    file_move_safe(filePath, moveToPath  + '/' + file)
+        logger.info('FTP - Imported %s sales, to %s from %s ' % ( count, company.name, path ))
+    return 'import done'    
 
 
 @celery.task()
