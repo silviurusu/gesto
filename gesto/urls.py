@@ -1,11 +1,10 @@
-from django.conf.urls.defaults import patterns, include, url
+from django.conf.urls import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.views.generic.simple import direct_to_template
 
 urlpatterns = patterns('',
     # Examples:
@@ -21,7 +20,7 @@ urlpatterns = patterns('',
     (r'^$', lambda r : HttpResponseRedirect('home/')),
     (r'^home/$', 'charts.views.home', { 'template': 'home.html' }, 'homeurl'),
     (r'^vanzari/$', 'charts.views.sales', { 'template': 'vanzari.html' }, "vanzariurl"),
-    (r'^stocuri/$', login_required(direct_to_template), { 'template': 'stocuri.html' }, 'stocuriurl'),
+#    (r'^stocuri/$', login_required(direct_to_template), { 'template': 'stocuri.html' }, 'stocuriurl'),
     (r'^products/$', 'charts.views.productList'),
 #    (r'^export/$', 'charts.views.sales_to_json'),
     (r'^json/$', 'charts.views.nginx_accel_sales'),

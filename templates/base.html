@@ -1,8 +1,9 @@
 {% load i18n %}
 {% load active %}
-{% url homeurl as home %}
-{% url vanzariurl as vanzari %}
-{% url stocuriurl as stocuri %}
+{% load static %} 
+{% get_static_prefix as STATIC_URL %} 
+{% url "homeurl" as home %}
+{% url "vanzariurl" as vanzari %}
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -57,7 +58,7 @@
                           <ul class="nav">
                               {% if user.is_authenticated %}
                                   <script>mixpanel.name_tag('{{ user.username }}');</script>
-                                  <li class="{% active request home %}"><a href="/home/">Home</a></li>
+                                  <li class="{% active request "homeurl" %}"><a href="/home/">Home</a></li>
                                   <li class="{% active request vanzari %}"><a href="/vanzari/">Vanzari <small class="muted">beta</small></a></li>
                                   <li class="{% active request stocuri %}"><a href="/stocuri/">Stocuri <small class="muted">dev</small></a></li>
                           </ul>
@@ -68,14 +69,14 @@
                                           {% if user.is_superuser %}
                                                 <li><a href="/admin/">Settings</a></li>
                                           {% endif %}
-                                          <li><a href="{% url userena_password_change user.username%}">Change password</a></li>
-                                          <li><a href="{% url userena_email_change user.username %}">{% trans "Change email" %}</a></li>
+                                          <li><a href="{% url "userena_password_change" user.username%}">Change password</a></li>
+                                          <li><a href="{% url "userena_email_change" user.username %}">{% trans "Change email" %}</a></li>
                                           <li class="divider"></li>
-                                          <li><a href="{% url userena_signout %}">{% trans 'Signout' %}</a></li>
+                                          <li><a href="{% url "userena_signout" %}">{% trans 'Signout' %}</a></li>
                                       </ul>
                                   </li>
                               {% else %}
-                                  <li class="pull-right"><a href="{% url userena_signin %}"><span>{% trans 'Signin' %}</span></a></li>
+                                  <li class="pull-right"><a href="{% url "userena_signin" %}"><span>{% trans 'Signin' %}</span></a></li>
 
                               {% endif %}
                           </ul>
