@@ -1,9 +1,12 @@
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from django.db.models.aggregates import Sum
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
 from models import *
+import logging, json
+logger = logging.getLogger(__name__)
 
 saleFieldNames = ['code','name','dep','qty','price']
 
@@ -23,6 +26,11 @@ def home(request, template):
     num_products = Operation.objects.filter(location_id__in = locations, operation_at__gte=start_date).aggregate(num_prods = Sum('items__qty'))
 
     return render(request, 'home.html', {'count':count, 'num_products': num_products['num_prods'], 'num_customers': num_customers})
+
+@csrf_exempt
+def importSale(request):
+    
+    return HttpResponse(json.dumps(json.loads(request.body)))
 
 
 @login_required

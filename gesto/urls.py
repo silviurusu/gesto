@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     (r'^products/$', 'charts.views.productList'),
 #    (r'^export/$', 'charts.views.sales_to_json'),
     (r'^json/$', 'charts.views.nginx_accel_sales'),
+    (r'^importSale/$', 'charts.views.importSale'),
     (r'^homesales/$', 'charts.views.nginx_accel_homesales'),
     (r'^accounts/', include('userena.urls')),
 )
