@@ -1235,7 +1235,7 @@
                 return this.$el;
             },
             update: function update(query) {
-            	alert("update");
+            	//alert("update");
                 var that = this;
                 this.query = query;
                 this.canceled = false;
@@ -1417,7 +1417,7 @@
             update: function update(query) {
                 _.each(this.datasets, updateDataset);
                 function updateDataset(dataset) {
-                	alert("updateDataset");
+                	//alert("updateDataset");
                     dataset.update(query);
                 }
             },
@@ -1569,8 +1569,8 @@
             },
             _onQueryChanged: function onQueryChanged(e, query) {
                 this.input.clearHintIfInvalid();
-                alert(query.length);
-                alert(this.minLength);
+                //alert(query.length);
+                //alert(this.minLength);
                 if (query.length >= this.minLength)
                 	this.dropdown.update(query) 
                 else

@@ -223,7 +223,7 @@ d3.csv("/json/", function(sales) {
 });
 
 
-
+/*
 $('#filterProduct').typeahead({
     items:8,
     source:   function (query, process) {
@@ -243,3 +243,23 @@ $('#filterProduct').typeahead({
     },
     minLength:2
 })
+*/
+
+$('#filterProduct').typeahead({
+hint: true,
+highlight: true,
+minLength: 1
+},
+{
+name: 'states',
+displayKey: 'value',
+source:   function (query, process) {
+    return $.get('/products/', {query: query }, function (data) {
+        labels = []
+        $.each(data, function(i,item) {
+            labels.push({value: item.name});
+        });
+        return process(labels);
+    })
+}
+});
