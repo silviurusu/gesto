@@ -1,4 +1,4 @@
-test $('body').css('cursor','wait');
+$('body').css('cursor','wait');
 $('.containerpb').slideDown();
 $('.bar').css('width', '80%').text('loading...');
 
@@ -177,11 +177,28 @@ d3.csv("/json/", function(sales) {
 
     // Like d3.time.format, but faster.
     function parseDate(d) {
-        return new Date(d.substring(0, 4),
+    	today = new Date();
+    	//alert(today);
+    	last_file_date = new Date(2014, 6, 5); //months start with index 0
+    	//alert(last_file_date);
+    	
+    	var one_day = 1000*60*60*24;
+    	diff = Math.abs(today - last_file_date);
+    	diff = Math.round(diff/one_day);
+    	//alert(diff);
+    	
+        rec_date = new Date(d.substring(0, 4),
             d.substring(5, 7) - 1,
             d.substring(8, 10),
             d.substring(11, 13),
             d.substring(14, 16));
+        
+        //alert(rec_date.toString());
+        
+        rec_date.setDate(rec_date.getDate() + diff);        
+        //alert(rec_date.toString());
+        
+        return rec_date;
     }
 
    window.reset = function() {
@@ -210,6 +227,7 @@ d3.csv("/json/", function(sales) {
 $('#filterProduct').typeahead({
     items:8,
     source:   function (query, process) {
+				alert (1);
                 return $.get('/products/', {query: query }, function (data) {
                     labels = []
                     $.each(data, function(i,item) {
@@ -223,5 +241,5 @@ $('#filterProduct').typeahead({
                 $('form .btn.reset').show();
                 return item;
     },
-    minLength:3
+    minLength:2
 })
