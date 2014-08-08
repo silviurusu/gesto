@@ -4,7 +4,7 @@ $('.bar').css('width', '80%').text('loading...');
 
 
 d3.csv("/json/", function(sales) {
-    // Various formatters.
+    // Various formatters.d
     var formatNumber = d3.format("d"),
         formatFloat = d3.format("f"),
         formatDate = d3.time.format("%B %d, %Y"),
