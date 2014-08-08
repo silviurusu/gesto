@@ -1,4 +1,4 @@
-$('body').css('cursor','wait');
+test $('body').css('cursor','wait');
 $('.containerpb').slideDown();
 $('.bar').css('width', '80%').text('loading...');
 
