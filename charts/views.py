@@ -38,9 +38,11 @@ def nginx_accel_sales(request):
 
     if request.user.profile.company.active:
         response = HttpResponse()
+        # url = '/protected/'+request.user.profile.company.name.lower()+'/sales.json' # this will obviously be different for every ressource
         url = '/protected/'+request.user.profile.company.name.lower()+'/sales.csv' # this will obviously be different for every ressource
         # let nginx determine the correct content type
         response['Content-Type']="application/json"
+        #response['Content-Disposition']="attachment; filename='sales.json'"
         response['Content-Disposition']="attachment; filename='sales.csv'"
         response['X-Accel-Redirect'] = url
         return response

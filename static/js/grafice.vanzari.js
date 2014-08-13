@@ -175,8 +175,12 @@ d3.csv("/json/", function(sales) {
         dc.renderAll();
     }
 
+    var ret_date = new Date();
     // Like d3.time.format, but faster.
-    function parseDate(d) {
+    function parseDate_test(d) {
+    	
+    	return ret_date;
+    	
     	today = new Date();
     	//alert(today);
     	last_file_date = new Date(2014, 6, 5); //months start with index 0
@@ -201,6 +205,13 @@ d3.csv("/json/", function(sales) {
         return rec_date;
     }
 
+    function parseDate(d) {
+        return new Date(d.substring(0, 4),
+            d.substring(5, 7) - 1,
+            d.substring(8, 10),
+            d.substring(11, 13),
+            d.substring(14, 16));
+    }
    window.reset = function() {
         $('.activeGest').toggleClass('activeGest');
         $('.all').toggleClass('activeGest');
